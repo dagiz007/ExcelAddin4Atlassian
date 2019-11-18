@@ -1,6 +1,6 @@
 ## ExcelAdd-in4Jira, Excel Add-in for Jira
 
-ExcelAdd-in4Jira is an free opensource Excel Add-in that allows you to connect your Jira-data directly to Microsoft Excel. 
+ExcelAdd-in4Jira is an Open Source Excel Add-in that allows you to connect your Jira-data directly to Microsoft Excel. 
 ExcelAdd-in4Jira is written in Visual Basic for Application (VBA) in Excel and saved as an Add-in. This means you can use all this functionality from all your Excel sheets. 
 
 # Installation
