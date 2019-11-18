@@ -4,7 +4,7 @@ ExcelAdd-in4Jira is an free opensource Excel Add-in that allows you to connect y
 ExcelAdd-in4Jira is written in Visual Basic for Application (VBA) in Excel and saved as an Add-in. This means you can use all this functionality from all your Excel sheets. 
 
 # Installation
-1. Downaload the latest [version of ExcelAdd-in4Jira](https://bitbucket.org/Stenstad/exceladdin4jira/downloads/).
+1. Downaload the latest [version of ExcelAdd-in4Jira](https://github.com/DagAtleStenstad/ExcelAdd-in4Jira/archive/master.zip).
 2. Unzip the file. 
 3. Add ExcelAdd-in4Jira as a new [Add-in in Excel](https://support.office.com/en-us/article/add-or-remove-add-ins-in-excel-0af570c4-5cf3-4fa9-9b88-403625a0b460).
 4. Start Excel og write this formula in a optional cell: **=JiraSettings()**
@@ -37,9 +37,9 @@ Excel will come up with suggestions as you write a formula. In the suggestion li
 
 **=JiraGetIssueLatestReleaseDate(JiraKey)** get the Jira issue last released date. 
 
-**==JiraGetIssueDaysInTransitions(statuses)** return number of days the issue has been in one or more statuses. 
+**=JiraGetIssueDaysInTransitions(statuses)** return number of days the issue has been in one or more statuses. 
 Example: =JiraGetIssueDaysInTransitions("Development", "Testing")
 
-**==JiraDownloadIssuesAttachments(()** download all Jira attachments based on a JQL search string. 
+**=JiraDownloadIssuesAttachments(()** download all Jira attachments based on a JQL search string. 
 
 ![JiraDownloadAttachments.png](resources/images/JiraDownloadAttachments.png)
