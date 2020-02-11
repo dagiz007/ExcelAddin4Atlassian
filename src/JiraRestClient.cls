@@ -12,6 +12,7 @@ Option Explicit
 Private jiraUrl As String
 Private jiraUsr As String
 Private jiraPwd As String
+Const jiraRestVersion As Integer = 2
 
 Private Sub Class_initialize()
 
@@ -83,7 +84,7 @@ Public Function getJiraStatus() As Collection
     Dim status As status
     Dim statuses As New Collection
     
-    jiraResponse = JiraService("GET", "rest/api/2/status")
+    jiraResponse = JiraService("GET", "rest/api/" & jiraRestVersion & "/status")
     
     Set json = JsonConverter.ParseJson(jiraResponse)
     
@@ -108,7 +109,7 @@ Public Function getJiraProject() As Collection
     Dim project As project
     Dim projects As New Collection
     
-    jiraResponse = JiraService("GET", "rest/api/2/project")
+    jiraResponse = JiraService("GET", "rest/api/" & jiraRestVersion & "/project")
     
     Set json = JsonConverter.ParseJson(jiraResponse)
     
@@ -134,7 +135,7 @@ Public Function getIssueTypes(jiraProjectID As String) As Collection
     Dim issueType As issueType
     Dim issueTypes As New Collection
         
-    jiraResponse = JiraService("GET", "rest/api/2/project/" & jiraProjectID & "/statuses")
+    jiraResponse = JiraService("GET", "rest/api/" & jiraRestVersion & "/project/" & jiraProjectID & "/statuses")
     
     Set json = JsonConverter.ParseJson(jiraResponse)
     
@@ -158,7 +159,7 @@ Public Function getJiraConfiguration() As Variant
     Dim json As Object
     Dim configuration(2) As Variant
 
-    jiraResponse = JiraService("GET", "rest/api/2/configuration")
+    jiraResponse = JiraService("GET", "rest/api/" & jiraRestVersion & "/configuration")
     
     Set json = JsonConverter.ParseJson(jiraResponse)
     
@@ -191,7 +192,7 @@ readIssues:
     data = " { ""jql"": """ & Trim(jql) & """, ""startAt"": " & startAt & ",""maxResults"": " & maxResults & _
            ",""fields"": [], ""expand"": [] } "
        
-    jiraResponse = JiraService("POST", "rest/api/2/search", data)
+    jiraResponse = JiraService("POST", "rest/api/" & jiraRestVersion & "/search", data)
 
     Set json = JsonConverter.ParseJson(jiraResponse)
     
@@ -219,13 +220,14 @@ Public Function getJiraIssue(ByVal jiraKey As String) As issue
     Dim issue As New issue
     Dim project As New project
     Dim issueType As New issueType
+   
     Dim data As String
     
     '//Cache JiraIssueResponse
     If jiraIssueCache Is Nothing Then Set jiraIssueCache = CreateObject("Scripting.Dictionary")
     
     If Not jiraIssueCache.Exists(jiraKey) Then
-        jiraIssueCache.Add jiraKey, JiraService("GET", "rest/api/2/issue/" & Trim(jiraKey) & "?expand=changelog")
+        jiraIssueCache.Add jiraKey, JiraService("GET", "rest/api/" & jiraRestVersion & "/issue/" & Trim(jiraKey) & "?expand=changelog")
     End If
 
     Set json = JsonConverter.ParseJson(jiraIssueCache(jiraKey))
@@ -234,8 +236,13 @@ Public Function getJiraIssue(ByVal jiraKey As String) As issue
     issue.jiraKey = json("key")
     issue.summary = json("fields")("summary")
     
-    'TO DO, add assagee and reporter as own objects.
-    issue.assignee = json("fields")("assignee")("displayName")
+    'TO DO, add assignee and reporter as own objects.
+    If Not IsNull(json("fields")("assignee")) Then
+        issue.assignee = json("fields")("reporter")("displayName")
+    Else
+        issue.assignee = "Unassigned"
+    End If
+    
     issue.reporter = json("fields")("reporter")("displayName")
     
     issueType.id = json("fields")("issuetype")("id")
@@ -366,7 +373,7 @@ End Function
 
 Public Sub DeleteJiraIssue(sIssueID As String, bDeleteSubTasks As Boolean)
     Dim jiraResponse As String
-    jiraResponse = JiraService("DELETE", "rest/api/2/issue/" & sIssueID & "?deleteSubtasks=" & bDeleteSubTasks)
+    jiraResponse = JiraService("DELETE", "rest/api/" & jiraRestVersion & "/issue/" & sIssueID & "?deleteSubtasks=" & bDeleteSubTasks)
     
      'Todo, check if status is sucsedsfull
 End Sub
@@ -377,7 +384,7 @@ Public Function addWatcher(jiraKey As String, watcher As String) As Boolean
     
     If Not IsNull(jiraUser) Then
         watcher = """" & jiraUser & """"
-        Call JiraService("POST", "rest/api/2/issue/" & jiraKey & "/watchers", watcher)
+        Call JiraService("POST", "rest/api/" & jiraRestVersion & "/issue/" & jiraKey & "/watchers", watcher)
         addWatcher = True
     Else
         addWatcher = False
@@ -392,7 +399,7 @@ Public Function getUsers(fuser As String) As Collection
     Dim users As New Collection
     Dim user As user
 
-    jiraResponse = JiraService("GET", "rest/api/2/user/search?username=" & fuser)
+    jiraResponse = JiraService("GET", "rest/api/" & jiraRestVersion & "/user/search?username=" & fuser)
     
     Set json = JsonConverter.ParseJson(jiraResponse)
     
