@@ -37,8 +37,8 @@ Excel will come up with suggestions as you write a formula. In the suggestion li
 
 **=JiraGetIssueLatestReleaseDate(JiraKey)** get the Jira issue last released date. 
 
-**=JiraGetIssueDaysInTransitions(statuses)** return number of days the issue has been in one or more statuses. 
-Example: =JiraGetIssueDaysInTransitions("Development", "Testing")
+**=JiraGetIssueDaysInTransitions(JiraKey; statuses)** return number of days the issue has been in one or more statuses. 
+Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development", "Testing")
 
 **=JiraDownloadIssuesAttachments(()** download all Jira attachments based on a JQL search string. 
 
