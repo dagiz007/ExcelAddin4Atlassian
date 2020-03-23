@@ -54,7 +54,7 @@ Private Sub cmdOk_Click()
 End Sub
 
 Private Sub lblExcelAddin4Jira_Click()
-    ActiveWorkbook.FollowHyperlink "https://bitbucket.org/Stenstad/exceladd-in4jira/src/master/"
+    ActiveWorkbook.FollowHyperlink "https://github.com/DagAtleStenstad/ExcelAdd-in4Jira"
 End Sub
 
 Private Sub UserForm_Initialize()
