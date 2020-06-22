@@ -10,6 +10,7 @@ Attribute VB_Exposed = False
 Private pId As String
 Private pTimeSpentSeconds As String
 Private pStarted As Date
+Private pAuthor As user
 
 Public Property Get id() As String
     id = pId
@@ -34,3 +35,12 @@ End Property
 Public Property Let started(value As Date)
     pStarted = value
 End Property
+
+Public Property Get author() As user
+    Set author = pAuthor
+End Property
+
+Public Property Let author(value As user)
+    Set pAuthor = value
+End Property
+

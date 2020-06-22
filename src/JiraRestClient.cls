@@ -218,9 +218,7 @@ Public Function getJiraIssue(ByVal jiraKey As String) As issue
 
     Dim json As Object
     Dim issue As New issue
-    Dim project As New project
-    Dim issueType As New issueType
-   
+
     Dim data As String
     
     '//Cache JiraIssueResponse
@@ -236,19 +234,12 @@ Public Function getJiraIssue(ByVal jiraKey As String) As issue
     issue.jiraKey = json("key")
     issue.summary = json("fields")("summary")
     
-    'TO DO, add assignee and reporter as own objects.
-    If Not IsNull(json("fields")("assignee")) Then
-        issue.assignee = json("fields")("reporter")("displayName")
-    Else
-        issue.assignee = "Unassigned"
-    End If
-    
-    issue.reporter = json("fields")("reporter")("displayName")
-    
-    issueType.id = json("fields")("issuetype")("id")
-    issueType.name = json("fields")("issuetype")("name")
-    issueType.subtask = json("fields")("issuetype")("subtask")
-    issue.issueType = issueType
+    If Not IsNull(json("fields")("assignee")) Then issue.assignee = AddUser(json("fields")("assignee"))
+    issue.reporter = AddUser(json("fields")("reporter"))
+    issue.creator = AddUser(json("fields")("creator"))
+
+    issue.issueType = AddIssueType(json("fields")("issuetype"))
+    issue.project = AddIssueProject(json("fields")("project"))
     
     issue.originalEstimateHours = IIf(IsNull(json("fields")("timeoriginalestimate")), "", json("fields")("timeoriginalestimate"))
     issue.remainingEstimateHours = IIf(IsNull(json("fields")("timeestimate")), "", json("fields")("timeestimate"))
@@ -258,6 +249,8 @@ Public Function getJiraIssue(ByVal jiraKey As String) As issue
     
     issue.worklog = AddIssueWorklogs(json("fields")("worklog")("worklogs"))
     issue.transition = AddIssueTransitions(json("changelog")("histories"))
+    issue.comment = AddIssueComments(json("fields")("comment")("comments"))
+    
     issue.attachment = AddAttachments(json("fields")("attachment"))
     issue.version = AddIssueFixVersions(json("fields")("fixVersions"))
     issue.createdDate = parseISO8601date(json("fields")("created"))
@@ -266,13 +259,45 @@ Public Function getJiraIssue(ByVal jiraKey As String) As issue
         issue.resolutionDate = parseISO8601date(json("fields")("resolutiondate"))
     End If
     
-    project.id = json("fields")("project")("id")
-    project.key = json("fields")("project")("key")
-    project.name = json("fields")("project")("name")
-    issue.project = project
-    
     Set getJiraIssue = issue
     
+End Function
+
+Private Function AddIssueType(ByVal item As Object) As issueType
+
+    Dim issueType As New issueType
+    
+    issueType.id = item("id")
+    issueType.name = item("name")
+    issueType.subtask = item("subtask")
+    
+    Set AddIssueType = issueType
+
+End Function
+
+Private Function AddIssueProject(ByVal item As Object) As project
+
+    Dim project As New project
+    
+    project.id = item("id")
+    project.key = item("key")
+    project.name = item("name")
+    
+    Set AddIssueProject = project
+
+End Function
+
+Private Function AddUser(ByVal item As Object) As user
+
+    Dim user As New user
+    
+    user.userKey = item("key")
+    user.name = item("displayName")
+    user.email = item("emailAddress")
+    user.active = item("active")
+        
+    Set AddUser = user
+
 End Function
 
 Private Function AddIssueFixVersions(ByVal items As Object) As Collection
@@ -297,6 +322,28 @@ Private Function AddIssueFixVersions(ByVal items As Object) As Collection
         
 End Function
 
+Private Function AddIssueComments(ByVal items As Object) As Collection
+
+    Dim comment As comment
+    Dim comments As New Collection
+    Dim item As Variant
+                    Dim dd As Object
+    For Each item In items
+        Set comment = New comment
+        
+        comment.body = item("body")
+        comment.createdDate = parseISO8601date(item("created"))
+        
+        'Check to support anonymous comments
+        If Not IsEmpty(item("author")) Then comment.author = AddUser(item("author"))
+        
+        comments.Add comment
+    Next
+        
+    Set AddIssueComments = comments
+        
+End Function
+
 Private Function AddIssueWorklogs(ByVal items As Object) As Collection
 
     Dim worklog As worklog
@@ -309,6 +356,7 @@ Private Function AddIssueWorklogs(ByVal items As Object) As Collection
         worklog.id = item("id")
         worklog.timeSpentSeconds = item("timeSpentSeconds")
         worklog.started = parseISO8601date(item("started"))
+        worklog.author = AddUser(item("author"))
         
         worklogs.Add worklog
     Next
@@ -357,7 +405,8 @@ Private Function AddIssueTransitions(ByVal items As Object) As Collection
                 transition.fromString = subItem("fromString")
                 transition.toId = subItem("to")
                 transition.toString = subItem("toString")
-                transition.timeInSourceStatus = DateDiff("d", tmpDate, parseISO8601date(item("created")))
+                transition.daysInSourceStatus = DateDiff("d", tmpDate, parseISO8601date(item("created")))
+                transition.author = AddUser(item("author"))
                 
                 transitions.Add transition
                     
@@ -374,8 +423,6 @@ End Function
 Public Sub DeleteJiraIssue(sIssueID As String, bDeleteSubTasks As Boolean)
     Dim jiraResponse As String
     jiraResponse = JiraService("DELETE", "rest/api/" & jiraRestVersion & "/issue/" & sIssueID & "?deleteSubtasks=" & bDeleteSubTasks)
-    
-     'Todo, check if status is sucsedsfull
 End Sub
 
 Public Function addWatcher(jiraKey As String, watcher As String) As Boolean
@@ -458,3 +505,5 @@ Private Function EncodeBase64(text As String) As String
     Set objNode = Nothing
     Set objXML = Nothing
 End Function
+
+

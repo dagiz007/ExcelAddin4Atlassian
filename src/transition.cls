@@ -12,7 +12,8 @@ Private pFromId As String
 Private pFromString As String
 Private pToId As String
 Private pToString As String
-Private pTimeInSourceStatus As Integer
+Private pDaysInSourceStatus As Integer
+Private pAuthor As user
 
 Public Property Get transitionDate() As Date
     transitionDate = pTransitionDate
@@ -54,10 +55,19 @@ Public Property Let toString(value As String)
     pToString = value
 End Property
 
-Public Property Get timeInSourceStatus() As Integer
-    timeInSourceStatus = pTimeInSourceStatus
+Public Property Get daysInSourceStatus() As Integer
+    daysInSourceStatus = pDaysInSourceStatus
 End Property
 
-Public Property Let timeInSourceStatus(value As Integer)
-    pTimeInSourceStatus = value
+Public Property Let daysInSourceStatus(value As Integer)
+    pDaysInSourceStatus = value
 End Property
+
+Public Property Get author() As user
+    Set author = pAuthor
+End Property
+
+Public Property Let author(value As user)
+    Set pAuthor = value
+End Property
+

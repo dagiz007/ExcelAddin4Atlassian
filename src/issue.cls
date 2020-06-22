@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 Private pId As String
 Private psJiraKey As String
 Private pSummary As String
-Private pReporter As String
-Private pAssignee As String
+Private pReporter As user
+Private pAssignee As user
+Private pCreator As user
 Private pIssueType As issueType
 Private pOriginalEstimateHours As String
 Private pRemainingEstimateHours As String
@@ -25,6 +26,7 @@ Private pProject As project
 Private pCreatedDate As Date
 Private pResolutionDate As Date
 Private pAttachment As Collection
+Private pComment As Collection
 
 Public Property Get id() As String
     id = pId
@@ -50,20 +52,28 @@ Public Property Let summary(value As String)
     pSummary = value
 End Property
 
-Public Property Get assignee() As String
-    assignee = pAssignee
+Public Property Get assignee() As user
+    Set assignee = pAssignee
 End Property
 
-Public Property Let assignee(value As String)
-    pAssignee = value
+Public Property Let assignee(value As user)
+    Set pAssignee = value
 End Property
 
-Public Property Get reporter() As String
-    reporter = pReporter
+Public Property Get reporter() As user
+    Set reporter = pReporter
 End Property
 
-Public Property Let reporter(value As String)
-    pReporter = value
+Public Property Let reporter(value As user)
+    Set pReporter = value
+End Property
+
+Public Property Get creator() As user
+    Set creator = pCreator
+End Property
+
+Public Property Let creator(value As user)
+    Set pCreator = value
 End Property
 
 Public Property Get issueType() As issueType
@@ -189,4 +199,14 @@ End Property
 Public Property Let attachment(value As Collection)
     Set pAttachment = value
 End Property
+
+Public Property Get comment() As Collection
+    Set comment = pComment
+End Property
+
+Public Property Let comment(value As Collection)
+    Set pComment = value
+End Property
+
+
 
