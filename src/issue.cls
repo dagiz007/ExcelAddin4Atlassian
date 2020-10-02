@@ -27,6 +27,7 @@ Private pCreatedDate As Date
 Private pResolutionDate As Date
 Private pAttachment As Collection
 Private pComment As Collection
+Private pJson As Object
 
 Public Property Get id() As String
     id = pId
@@ -206,6 +207,14 @@ End Property
 
 Public Property Let comment(value As Collection)
     Set pComment = value
+End Property
+
+Public Property Get json() As Object
+    Set json = pJson
+End Property
+
+Public Property Let json(value As Object)
+    Set pJson = value
 End Property
 
 

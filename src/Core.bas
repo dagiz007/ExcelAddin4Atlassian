@@ -3,8 +3,9 @@ Option Explicit
 
 Public activeCellAddress As String
 Public excelAddInn4JiraCommand As String
-Public excelAddInn4JiraCommandArg As String
+Public excelAddInn4JiraCommandArg As String             '// TO do, sjekk om denne kan slettes?
 Public jiraIssueCache As Object
+Public jiraFieldCache As Collection
 
 Private jiraClient As New JiraRestClient
 Private issue As issue
@@ -54,12 +55,16 @@ End Function
 
 Function JiraGetIssueAssignee(jiraKey As String) As String
     Set issue = jiraClient.getJiraIssue(jiraKey)
-    JiraGetIssueAssignee = issue.assignee
+    JiraGetIssueAssignee = issue.assignee.name
 End Function
 
 Function JiraGetIssueReporter(jiraKey As String) As String
     Set issue = jiraClient.getJiraIssue(jiraKey)
-    JiraGetIssueReporter = issue.reporter
+    JiraGetIssueReporter = issue.reporter.name
+End Function
+
+Function JiraGetIssueCustomField(jiraKey As String, fieldName As String) As String
+    JiraGetIssueCustomField = jiraClient.getJiraIssueCustomField(jiraKey, fieldName)
 End Function
 
 Function JiraGetIssueDaysInTransitions(jiraKey As String, ParamArray transitions() As Variant) As Integer
@@ -74,7 +79,7 @@ Set issue = jiraClient.getJiraIssue(jiraKey)
         status = transition.fromString
         
         If IsInArray(status, CVar(transitions)) Then
-            JiraGetIssueDaysInTransitions = JiraGetIssueDaysInTransitions + transition.timeInSourceStatus
+            JiraGetIssueDaysInTransitions = JiraGetIssueDaysInTransitions + transition.daysInSourceStatus
         End If
         
     Next

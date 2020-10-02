@@ -40,6 +40,9 @@ Excel will come up with suggestions as you write a formula. In the suggestion li
 **=JiraGetIssueDaysInTransitions(JiraKey; statuses)** return number of days the issue has been in one or more statuses. 
 Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development", "Testing")
 
+**=JiraGetIssueCustomField(JiraKey; CutomFieldName)** get value from the custom field 
+Example: =JiraGetIssueCustomField("TE-1"; "Custom field name")
+
 **=JiraDownloadIssuesAttachments(()** download all Jira attachments based on a JQL search string. 
 
 ![JiraDownloadAttachments.png](resources/images/JiraDownloadAttachments.png)

@@ -216,50 +216,119 @@ End Function
 
 Public Function getJiraIssue(ByVal jiraKey As String) As issue
 
-    Dim json As Object
-    Dim issue As New issue
-
-    Dim data As String
+    Dim jiraResponse As String
     
-    '//Cache JiraIssueResponse
     If jiraIssueCache Is Nothing Then Set jiraIssueCache = CreateObject("Scripting.Dictionary")
     
+    'check if issue is already cached
     If Not jiraIssueCache.Exists(jiraKey) Then
-        jiraIssueCache.Add jiraKey, JiraService("GET", "rest/api/" & jiraRestVersion & "/issue/" & Trim(jiraKey) & "?expand=changelog")
+    
+        jiraResponse = JiraService("GET", "rest/api/" & jiraRestVersion & "/issue/" & Trim(jiraKey) & "?expand=changelog")
+        
+        Dim json As Object
+        Set json = JsonConverter.ParseJson(jiraResponse)
+        
+        Dim issue As New issue
+        
+        issue.id = json("id")
+        issue.jiraKey = json("key")
+        issue.summary = json("fields")("summary")
+        
+        If Not IsNull(json("fields")("assignee")) Then issue.assignee = AddUser(json("fields")("assignee"))
+        issue.reporter = AddUser(json("fields")("reporter"))
+        issue.creator = AddUser(json("fields")("creator"))
+    
+        issue.issueType = AddIssueType(json("fields")("issuetype"))
+        issue.project = AddIssueProject(json("fields")("project"))
+        
+        issue.originalEstimateHours = IIf(IsNull(json("fields")("timeoriginalestimate")), "", json("fields")("timeoriginalestimate"))
+        issue.remainingEstimateHours = IIf(IsNull(json("fields")("timeestimate")), "", json("fields")("timeestimate"))
+        issue.originalAggregateEstimateHours = IIf(IsNull(json("fields")("aggregatetimeoriginalestimate")), "", json("fields")("aggregatetimeoriginalestimate"))
+        issue.remainingAggregateEstimateHours = IIf(IsNull(json("fields")("aggregatetimeestimate")), "", json("fields")("aggregatetimeestimate"))
+        issue.aggregateProgress = IIf(IsNull(json("fields")("aggregateprogress")("progress")), "", json("fields")("aggregateprogress")("progress"))
+        
+        issue.worklog = AddIssueWorklogs(json("fields")("worklog")("worklogs"))
+        issue.transition = AddIssueTransitions(json("changelog")("histories"))
+        issue.comment = AddIssueComments(json("fields")("comment")("comments"))
+        
+        issue.attachment = AddAttachments(json("fields")("attachment"))
+        issue.version = AddIssueFixVersions(json("fields")("fixVersions"))
+        issue.createdDate = parseISO8601date(json("fields")("created"))
+        
+        If Not IsNull(json("fields")("resolutiondate")) Then
+            issue.resolutionDate = parseISO8601date(json("fields")("resolutiondate"))
+        End If
+        
+        issue.json = json
+        
+        jiraIssueCache.Add jiraKey, issue
+           
     End If
+        
+    Set getJiraIssue = jiraIssueCache(jiraKey)
+        
+End Function
 
-    Set json = JsonConverter.ParseJson(jiraIssueCache(jiraKey))
+Public Function getJiraIssueCustomField(jiraKey As String, fieldName As String) As String
     
-    issue.id = json("id")
-    issue.jiraKey = json("key")
-    issue.summary = json("fields")("summary")
+    Dim customFieldValue As String: customFieldValue = "N/A"
     
-    If Not IsNull(json("fields")("assignee")) Then issue.assignee = AddUser(json("fields")("assignee"))
-    issue.reporter = AddUser(json("fields")("reporter"))
-    issue.creator = AddUser(json("fields")("creator"))
+    Dim field As field
+    Dim fields As Collection
+    
+    Set fields = getJiraFields()
+ 
+    For Each field In fields
+        If field.name = fieldName Then
+            Dim customFieldId As String
+            customFieldId = field.id
+            Exit For
+        End If
+    Next
+    
+     
+    If Not customFieldId = "" Then
 
-    issue.issueType = AddIssueType(json("fields")("issuetype"))
-    issue.project = AddIssueProject(json("fields")("project"))
+        Dim issue As issue
+        Set issue = getJiraIssue(jiraKey)
+        
+        If Not IsNull(issue.json("fields")(customFieldId)) Then customFieldValue = issue.json("fields")(customFieldId)("value")
     
-    issue.originalEstimateHours = IIf(IsNull(json("fields")("timeoriginalestimate")), "", json("fields")("timeoriginalestimate"))
-    issue.remainingEstimateHours = IIf(IsNull(json("fields")("timeestimate")), "", json("fields")("timeestimate"))
-    issue.originalAggregateEstimateHours = IIf(IsNull(json("fields")("aggregatetimeoriginalestimate")), "", json("fields")("aggregatetimeoriginalestimate"))
-    issue.remainingAggregateEstimateHours = IIf(IsNull(json("fields")("aggregatetimeestimate")), "", json("fields")("aggregatetimeestimate"))
-    issue.aggregateProgress = IIf(IsNull(json("fields")("aggregateprogress")("progress")), "", json("fields")("aggregateprogress")("progress"))
-    
-    issue.worklog = AddIssueWorklogs(json("fields")("worklog")("worklogs"))
-    issue.transition = AddIssueTransitions(json("changelog")("histories"))
-    issue.comment = AddIssueComments(json("fields")("comment")("comments"))
-    
-    issue.attachment = AddAttachments(json("fields")("attachment"))
-    issue.version = AddIssueFixVersions(json("fields")("fixVersions"))
-    issue.createdDate = parseISO8601date(json("fields")("created"))
-    
-    If Not IsNull(json("fields")("resolutiondate")) Then
-        issue.resolutionDate = parseISO8601date(json("fields")("resolutiondate"))
     End If
     
-    Set getJiraIssue = issue
+    getJiraIssueCustomField = customFieldValue
+    
+End Function
+
+Private Function getJiraFields() As Collection
+    
+    'check if fields are already cached
+    If jiraFieldCache Is Nothing Then
+    
+        Dim jiraResponse As String
+        Dim json As Object
+        Dim item As Variant
+        Dim fields As New Collection
+        Dim field As field
+    
+        jiraResponse = JiraService("GET", "rest/api/" & jiraRestVersion & "/field")
+        
+        Set json = JsonConverter.ParseJson(jiraResponse)
+        
+        For Each item In json
+            Set field = New field
+    
+            field.id = item("id")
+            field.name = item("name")
+            
+            fields.Add field
+        Next
+        
+        Set jiraFieldCache = fields
+    
+    End If
+       
+    Set getJiraFields = jiraFieldCache
     
 End Function
 
@@ -452,13 +521,13 @@ Public Function getUsers(fuser As String) As Collection
     
     For Each item In json
         Set user = New user
-    
-            user.userKey = item("key")
-            user.email = item("emailAddress")
-            user.name = item("displayName")
-            user.active = item("active")
-            
-            users.Add user
+
+        user.userKey = item("key")
+        user.email = item("emailAddress")
+        user.name = item("displayName")
+        user.active = item("active")
+        
+        users.Add user
     Next
        
     Set getUsers = users
@@ -505,5 +574,3 @@ Private Function EncodeBase64(text As String) As String
     Set objNode = Nothing
     Set objXML = Nothing
 End Function
-
-
