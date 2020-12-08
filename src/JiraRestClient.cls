@@ -6,7 +6,7 @@ Attribute VB_Name = "JiraRestClient"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Option Explicit
 
 Private jiraUrl As String
@@ -47,7 +47,7 @@ Private Function JiraService(methods As String, url As String, Optional sData As
         Else
             jiraResponse = .ResponseText
         End If
-       
+
     End With
         
     Set jiraClient = Nothing
@@ -532,6 +532,32 @@ Public Function getUsers(fuser As String) As Collection
        
     Set getUsers = users
     
+End Function
+
+Public Function createJiraIssue(project As String, summary As String, description As String, issueType As String, Optional parentKey As String)
+
+Dim data As String
+Dim jiraResponse As String
+Dim json As Object
+ 
+    data = " { ""fields"" : { " & _
+        """project"" : { ""key"" : """ & project & """ }, "
+        
+        If Not Trim(parentKey) = vbNullString Then data = data & """parent"": { ""key"": """ & parentKey & """ }, "
+        
+        data = data & """summary"" : """ & summary & """, "
+        
+        If Not Trim(description) = vbNullString Then data = data & """description"" : """ & description & """, "
+        
+        data = data & """issuetype"" : { ""name"" : """ & issueType & """ } } }"
+
+       
+jiraResponse = JiraService("POST", "rest/api/" & jiraRestVersion & "/issue/", data)
+    
+Set json = JsonConverter.ParseJson(jiraResponse)
+    
+createJiraIssue = json("key")
+       
 End Function
 
 Public Function getJiraUserKey(findUser As String) As Variant

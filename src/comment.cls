@@ -6,7 +6,7 @@ Attribute VB_Name = "comment"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Private pCreatedDate As Date
 Private pBody As String
 Private pAuthor As user

@@ -6,7 +6,7 @@ Attribute VB_Name = "BreakDownTable"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Private pStartingPosition As Range
 
 Public Property Get StartingPosition() As Range

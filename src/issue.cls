@@ -6,7 +6,7 @@ Attribute VB_Name = "issue"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Private pId As String
 Private psJiraKey As String
 Private pSummary As String
@@ -216,6 +216,3 @@ End Property
 Public Property Let json(value As Object)
     Set pJson = value
 End Property
-
-
-

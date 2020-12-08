@@ -6,7 +6,7 @@ Attribute VB_Name = "project"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Private pId As String
 Private pKey As String
 Private pName As String

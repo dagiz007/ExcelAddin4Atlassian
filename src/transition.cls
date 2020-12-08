@@ -6,7 +6,7 @@ Attribute VB_Name = "transition"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Private pTransitionDate As Date
 Private pFromId As String
 Private pFromString As String

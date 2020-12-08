@@ -55,7 +55,12 @@ End Function
 
 Function JiraGetIssueAssignee(jiraKey As String) As String
     Set issue = jiraClient.getJiraIssue(jiraKey)
-    JiraGetIssueAssignee = issue.assignee.name
+    
+    If issue.assignee Is Nothing Then
+        JiraGetIssueAssignee = "N/A"
+    Else
+        JiraGetIssueAssignee = issue.assignee.name
+    End If
 End Function
 
 Function JiraGetIssueReporter(jiraKey As String) As String
@@ -110,4 +115,9 @@ End Function
 
 Public Function IsInArray(stringToBeFound As String, arr As Variant) As Boolean
     IsInArray = (UBound(Filter(arr, stringToBeFound)) > -1)
+End Function
+
+'This function make it possible for Excel-macros in other files to use the JiraRestClient-class.
+Public Function getJiraRestClient() As JiraRestClient
+    Set getJiraRestClient = New JiraRestClient
 End Function
