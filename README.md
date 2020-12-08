@@ -21,10 +21,10 @@ Excel will come up with suggestions as you write a formula. In the suggestion li
 
 ![JiraSettings.png](resources/images/JiraSettings.png)
 
-**=createJiraIssue(project, summary, description, issueType, Optional parentKey)** create new Jira issue.
-If parentKey is not set the function will create a normal issue. If you want to create a subtask the ParentKey must reference to the issue where you want to create the subtask. 
-Example: =createJiraIssue("RISK"; "My first issue"; "Created by ExcelAdd-in4Jira"; "Task")
-Example: =createJiraIssue("RISK"; "My first subtask"; "Created by ExcelAdd-in4Jira"; "Sub-task"; "RISK-1")
+**=createJiraIssue(project, summary, description, issueType, Optional parentKey)** create new Jira issue.  
+If parentKey is not set the function will create a normal issue. If you want to create a subtask the ParentKey must reference to the issue where you want to create the subtask.   
+Example: =createJiraIssue("RISK"; "My first issue"; "Created by ExcelAdd-in4Jira"; "Task")  
+Example: =createJiraIssue("RISK"; "My first subtask"; "Created by ExcelAdd-in4Jira"; "Sub-task"; "RISK-1")  
 
 **=JiraGetIssues()** gets all Jira issues based on a JQL search string. 
 
@@ -42,10 +42,10 @@ Example: =createJiraIssue("RISK"; "My first subtask"; "Created by ExcelAdd-in4Ji
 
 **=JiraGetIssueLatestReleaseDate(JiraKey)** get the Jira issue last released date. 
 
-**=JiraGetIssueDaysInTransitions(JiraKey; statuses)** return number of days the issue has been in one or more statuses. 
+**=JiraGetIssueDaysInTransitions(JiraKey; statuses)** return number of days the issue has been in one or more statuses.  
 Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development", "Testing")
 
-**=JiraGetIssueCustomField(JiraKey; CutomFieldName)** get value from the custom field 
+**=JiraGetIssueCustomField(JiraKey; CutomFieldName)** get value from the custom field.  
 Example: =JiraGetIssueCustomField("TE-1"; "Custom field name")
 
 **=JiraDownloadIssuesAttachments(()** download all Jira attachments based on a JQL search string. 
