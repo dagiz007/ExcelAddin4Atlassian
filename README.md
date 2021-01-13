@@ -46,6 +46,7 @@ Example: =createJiraIssue("RISK"; "My first subtask"; "Created by ExcelAdd-in4Ji
 Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development", "Testing")
 
 **=JiraGetIssueCustomField(JiraKey; CutomFieldName)** get value from the custom field.  
+If the custom fild is an array (multiple selected values) you must [set the cell format to "Wrapped text"](https://www.techonthenet.com/excel/cells/wrap_text2016.php). 
 Example: =JiraGetIssueCustomField("TE-1"; "Custom field name")
 
 **=JiraDownloadIssuesAttachments(()** download all Jira attachments based on a JQL search string. 
