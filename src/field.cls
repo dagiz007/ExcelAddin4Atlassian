@@ -9,6 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Private pId As String
 Private pName As String
+Private pFieldType As String
 
 Public Property Get id() As String
     id = pId
@@ -24,4 +25,12 @@ End Property
 
 Public Property Let name(value As String)
     pName = value
+End Property
+
+Public Property Get fieldType() As String
+    fieldType = pFieldType
+End Property
+
+Public Property Let fieldType(value As String)
+    pFieldType = value
 End Property

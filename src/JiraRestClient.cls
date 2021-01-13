@@ -47,6 +47,8 @@ Private Function JiraService(methods As String, url As String, Optional sData As
         Else
             jiraResponse = .ResponseText
         End If
+        
+        Debug.Print jiraResponse
 
     End With
         
@@ -275,6 +277,7 @@ Public Function getJiraIssueCustomField(jiraKey As String, fieldName As String) 
     
     Dim field As field
     Dim fields As Collection
+    Dim item As Variant
     
     Set fields = getJiraFields()
  
@@ -292,11 +295,35 @@ Public Function getJiraIssueCustomField(jiraKey As String, fieldName As String) 
         Dim issue As issue
         Set issue = getJiraIssue(jiraKey)
         
-        If Not IsNull(issue.json("fields")(customFieldId)) Then customFieldValue = issue.json("fields")(customFieldId)("value")
+        If Not IsNull(issue.json("fields")(customFieldId)) Then
+            Select Case field.fieldType
+            
+                Case "user"
+                    customFieldValue = issue.json("fields")(customFieldId)("name")
+                
+                Case "array"
+
+                    For Each item In issue.json("fields")(customFieldId)
+                        If customFieldValue = "N/A" Then
+                            customFieldValue = item("value")
+                        Else
+                            customFieldValue = customFieldValue & Chr(10) & item("value")
+                        End If
+                    Next
+                    
+        
+                Case "string"
+                    customFieldValue = issue.json("fields")(customFieldId)
+                
+                Case "option"
+                    customFieldValue = issue.json("fields")(customFieldId)("value")
+                    
+            End Select
+        End If
     
     End If
     
-    getJiraIssueCustomField = customFieldValue
+    getJiraIssueCustomField = Trim(customFieldValue)
     
 End Function
 
@@ -320,6 +347,7 @@ Private Function getJiraFields() As Collection
     
             field.id = item("id")
             field.name = item("name")
+            If Not IsEmpty(item("schema")) Then field.fieldType = item("schema")("type")
             
             fields.Add field
         Next
@@ -534,7 +562,7 @@ Public Function getUsers(fuser As String) As Collection
     
 End Function
 
-Public Function createJiraIssue(project As String, summary As String, description As String, issueType As String, Optional parentKey As String)
+Public Function createJiraIssue(project As String, summary As String, description As String, assignee As String, issueType As String, Optional parentKey As String)
 
 Dim data As String
 Dim jiraResponse As String
@@ -546,6 +574,8 @@ Dim json As Object
         If Not Trim(parentKey) = vbNullString Then data = data & """parent"": { ""key"": """ & parentKey & """ }, "
         
         data = data & """summary"" : """ & summary & """, "
+        
+        If Not Trim(assignee) = vbNullString Then data = data & """assignee"": { ""name"": """ & assignee & """ }, "
         
         If Not Trim(description) = vbNullString Then data = data & """description"" : """ & description & """, "
         
