@@ -304,11 +304,7 @@ Public Function getJiraIssueCustomField(jiraKey As String, fieldName As String) 
                 Case "array"
 
                     For Each item In issue.json("fields")(customFieldId)
-                        If customFieldValue = "N/A" Then
-                            customFieldValue = item("value")
-                        Else
-                            customFieldValue = customFieldValue & Chr(10) & item("value")
-                        End If
+                        customFieldValue = customFieldValue & Chr(10) & item("value")
                     Next
                     
         
@@ -323,7 +319,7 @@ Public Function getJiraIssueCustomField(jiraKey As String, fieldName As String) 
     
     End If
     
-    getJiraIssueCustomField = Trim(customFieldValue)
+    getJiraIssueCustomField = customFieldValue
     
 End Function
 
@@ -604,6 +600,32 @@ Public Function getJiraUserKey(findUser As String) As Variant
     End If
 
 End Function
+
+Public Function createJiraIssueLink(linkType As String, inwardIssueKey As String, outwardIssueKey As String, Optional comment As String)
+
+Dim data As String
+Dim jiraResponse As String
+Dim json As Object
+ 
+    data = " { ""type"" : { " & _
+        """name"": """ & linkType & """ }, " & _
+        """inwardIssue"": { ""key"": """ & inwardIssueKey & """ }, " & _
+        """outwardIssue"": { ""key"": """ & outwardIssueKey & """ } "
+        
+        If Not comment = "" Then data = data & ", ""comment"": { ""body"": """ & comment & """ } "
+        
+        data = data & "}"
+       
+jiraResponse = JiraService("POST", "rest/api/" & jiraRestVersion & "/issueLink/", data)
+
+If jiraResponse = "" Then
+    createJiraIssueLink = "Link created successfully"
+Else
+    createJiraIssueLink = "Error: " & jiraResponse
+End If
+    
+End Function
+
 
 Public Sub JiraLogout()
     Call JiraService("DELETE", "rest/auth/1/session")

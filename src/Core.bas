@@ -72,6 +72,10 @@ Function JiraGetIssueCustomField(jiraKey As String, fieldName As String) As Stri
     JiraGetIssueCustomField = jiraClient.getJiraIssueCustomField(jiraKey, fieldName)
 End Function
 
+Function JiraCreateIssueLink(linkType As String, inwardIssueKey As String, outwardIssueKey As String, Optional comment As String)
+    JiraCreateIssueLink = jiraClient.createJiraIssueLink(linkType, inwardIssueKey, outwardIssueKey, comment)
+End Function
+
 Function JiraGetIssueDaysInTransitions(jiraKey As String, ParamArray transitions() As Variant) As Integer
 
 Dim transition As transition
@@ -120,4 +124,9 @@ End Function
 'This function make it possible for Excel-macros in other files to use the JiraRestClient-class.
 Public Function getJiraRestClient() As JiraRestClient
     Set getJiraRestClient = New JiraRestClient
+End Function
+
+'This function make it possible for Excel-macros in other files to use the BreakDownTable-class.
+Public Function getBreakDownTable() As BreakDownTable
+    Set getBreakDownTable = New BreakDownTable
 End Function
