@@ -21,10 +21,14 @@ Excel will come up with suggestions as you write a formula. In the suggestion li
 
 ![JiraSettings.png](resources/images/JiraSettings.png)
 
-**=createJiraIssue(project, summary, description, issueType, Optional parentKey)** create new Jira issue.  
+**=JiraCreateIssue(project, summary, description, issueType, Optional assignee, Optional parentKey)** create new Jira issue.  
+If assignee is not set the issue will be Unassigned.
 If parentKey is not set the function will create a normal issue. If you want to create a subtask the ParentKey must reference to the issue where you want to create the subtask.   
-Example: =createJiraIssue("RISK"; "My first issue"; "Created by ExcelAdd-in4Jira"; "Task")  
-Example: =createJiraIssue("RISK"; "My first subtask"; "Created by ExcelAdd-in4Jira"; "Sub-task"; "RISK-1")  
+Example: =JiraCreateIssue("RISK"; "My first issue"; "Created by ExcelAdd-in4Jira"; "Task")  
+Example: =JiraCreateIssue("RISK"; "My first subtask"; "Created by ExcelAdd-in4Jira"; "Sub-task"; "RISK-1")  
+
+**=JiraCreateIssueLink(type, inwardIssue, outwardIssue, Optional comment)** create link between two Jira Issues.
+Example: =JiraCreateIssueLink("Duplicate"; "ISSUE-1"; "ISSUE-2"; "This is a comment.")  
 
 **=JiraGetIssues()** gets all Jira issues based on a JQL search string. 
 

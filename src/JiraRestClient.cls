@@ -558,7 +558,7 @@ Public Function getUsers(fuser As String) As Collection
     
 End Function
 
-Public Function createJiraIssue(project As String, summary As String, description As String, assignee As String, issueType As String, Optional parentKey As String)
+Public Function createJiraIssue(project As String, summary As String, description As String, issueType As String, Optional assignee As String, Optional parentKey As String)
 
 Dim data As String
 Dim jiraResponse As String
@@ -582,6 +582,7 @@ jiraResponse = JiraService("POST", "rest/api/" & jiraRestVersion & "/issue/", da
     
 Set json = JsonConverter.ParseJson(jiraResponse)
     
+'TODO return error if not success
 createJiraIssue = json("key")
        
 End Function
