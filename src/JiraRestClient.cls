@@ -235,6 +235,7 @@ Public Function getJiraIssue(ByVal jiraKey As String) As issue
         issue.id = json("id")
         issue.jiraKey = json("key")
         issue.summary = json("fields")("summary")
+        issue.description = json("fields")("description")
         
         If Not IsNull(json("fields")("assignee")) Then issue.assignee = AddUser(json("fields")("assignee"))
         issue.reporter = AddUser(json("fields")("reporter"))
@@ -558,7 +559,7 @@ Public Function getUsers(fuser As String) As Collection
     
 End Function
 
-Public Function createJiraIssue(project As String, summary As String, description As String, issueType As String, Optional assignee As String, Optional parentKey As String)
+Public Function createJiraIssue(project As String, summary As String, description As String, assignee As String, issueType As String, Optional parentKey As String)
 
 Dim data As String
 Dim jiraResponse As String

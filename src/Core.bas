@@ -43,6 +43,11 @@ Function JiraGetIssueSummary(jiraKey As String) As String
     JiraGetIssueSummary = issue.summary
 End Function
 
+Function JiraGetIssueDescription(jiraKey As String) As String
+    Set issue = jiraClient.getJiraIssue(jiraKey)
+    JiraGetIssueDescription = issue.description
+End Function
+
 Function JiraGetIssueCreatedDate(jiraKey As String) As Date
     Set issue = jiraClient.getJiraIssue(jiraKey)
     JiraGetIssueCreatedDate = issue.createdDate
@@ -76,8 +81,8 @@ Function JiraCreateIssueLink(linkType As String, inwardIssueKey As String, outwa
     JiraCreateIssueLink = jiraClient.createJiraIssueLink(linkType, inwardIssueKey, outwardIssueKey, comment)
 End Function
 
-Function JiraCreateIssue(project As String, summary As String, description As String, issueType As String, Optional assignee As String, Optional parentKey As String)
-    JiraCreateIssue = jiraClient.createJiraIssue(project, summary, description, issueType, assignee, parentKey)
+Function JiraCreateIssue(project As String, summary As String, description As String, issueType As String, Optional parentKey As String)
+    JiraCreateIssue = jiraClient.createJiraIssue(project, summary, description, issueType, parentKey)
 End Function
 
 Function JiraGetIssueDaysInTransitions(jiraKey As String, ParamArray transitions() As Variant) As Integer
