@@ -235,7 +235,7 @@ Public Function getJiraIssue(ByVal jiraKey As String) As issue
         issue.id = json("id")
         issue.jiraKey = json("key")
         issue.summary = json("fields")("summary")
-        issue.description = json("fields")("description")
+        issue.description = IIf(IsNull(json("fields")("description")), "", json("fields")("description"))
         
         If Not IsNull(json("fields")("assignee")) Then issue.assignee = AddUser(json("fields")("assignee"))
         issue.reporter = AddUser(json("fields")("reporter"))
@@ -574,7 +574,7 @@ Dim json As Object
         
         If Not Trim(assignee) = vbNullString Then data = data & """assignee"": { ""name"": """ & assignee & """ }, "
         
-        If Not Trim(description) = vbNullString Then data = data & """description"" : """ & description & """, "
+        If Not Trim(description) = vbNullString Then data = data & """description"" : " & ConvertToJson(description) & ", "
         
         data = data & """issuetype"" : { ""name"" : """ & issueType & """ } } }"
 
@@ -614,7 +614,7 @@ Dim json As Object
         """inwardIssue"": { ""key"": """ & inwardIssueKey & """ }, " & _
         """outwardIssue"": { ""key"": """ & outwardIssueKey & """ } "
         
-        If Not comment = "" Then data = data & ", ""comment"": { ""body"": """ & comment & """ } "
+        If Not comment = "" Then data = data & ", ""comment"": { ""body"": " & ConvertToJson(comment) & " } "
         
         data = data & "}"
        
