@@ -165,7 +165,7 @@ Private Sub getSelectedEmail()
     
     With GetCurrentItem
         txtSummary = .Subject
-        txtDescription = .responseText
+        txtDescription = .body
     
         If .attachments.Count > 0 Then
 

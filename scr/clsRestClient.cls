@@ -38,7 +38,6 @@ Public Property Let responseBody(value As Variant)
 End Property
 
 Private Sub Class_initialize()
-    If gstrAtlassianURL = vbNullString Then Core.Auto_Open
     If gstrBoundary = vbNullString Then gstrBoundary = CreateBoundary
 End Sub
 
