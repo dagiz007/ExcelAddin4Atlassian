@@ -21,7 +21,7 @@ To view required or optional arguments for the selected function, press Ctrl + S
 * Enable logging (log all the rest API response)
 * Log-path 
 
-![frmSettings.png](resources/images/frmSettings.png
+![frmSettings.png](resources/images/frmSettings.png)
 
 **=JiraCreateIssue(project, issueType, summary, description)** Creates a new Jira issue.  
 Example: =JiraCreateIssue("RISK"; "Task"; "My first issue"; "Created by ExcelAddin4Atlassian")
@@ -60,6 +60,24 @@ If you possess your own Excel Macro-Enabled Workbook (*.xlsm), you can include E
 
 ![References.png](resources/images/References.png)
 
+# Getting started 
+
+```VBA
+    Dim issues As Collection
+    Dim issue As clsJiraIssue
+    
+    Set issues = Jira.GetIssues("project=TSU AND issueType=Task")
+    
+    For Each issue In issues
+        DoEvents
+        
+        Debug.Print issue.Summary
+    Next
+
+    Set issues = Nothing
+    Set issue = Nothing
+```
+
 The example below goes through all Confluence pages and replaces one string with another.
 
 ```VBA
@@ -74,7 +92,6 @@ The example below goes through all Confluence pages and replaces one string with
     
     Set pages = confluence.getPages
     
-    
     For Each page In pages
         DoEvents
         
@@ -84,7 +101,6 @@ The example below goes through all Confluence pages and replaces one string with
             Call confluence.updateConfluenceContent(page.ID, page.Status, page.Title, page.body, page.Version + 1)
         End If
     Next
-    
     
     Set pages = Nothing
     Set page = Nothing
