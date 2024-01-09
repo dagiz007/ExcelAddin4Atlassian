@@ -1,4 +1,4 @@
-# ExcelAddin4Atlassian, Excel Add-in for the Atlasstian products Jira and Confluence
+# ExcelAddin4Atlassian
 
 ExcelAddin4Atlassian is an open-source Excel Add-in that enables you to connect your Jira and Confluence data directly to Microsoft Excel. 
 It is written in Visual Basic for Application (VBA) within Excel and saved as an Add-in, allowing you to utilize its functionality across all your Excel sheets.
@@ -6,7 +6,7 @@ It is written in Visual Basic for Application (VBA) within Excel and saved as an
 ## Installation
 1. Downaload the latest [version of ExcelAddin4Atlassian](https://github.com/Dagiz007/ExcelAddin4Atlassian/archive/master.zip).
 2. Unzip the file. 
-3. Add ExcelAddin4Atlassian as a new [Add-in in Excel](https://support.office.com/en-us/article/add-or-remove-add-ins-in-excel-0af570c4-5cf3-4fa9-9b88-403625a0b460).
+3. Add ExcelAddin4Atlassian as a new Add-in in Excel (Click the File tab, click Options, and then click the Add-Ins category. In the Manage box, click Excel Add-ins, and then click Go).
 4. Start Excel og write this formula in a optional cell: **=OpenExcelAddin4AtlassianSettings()**
 5. Fill in your Atlassian URL, username and password. Click <Ok> to save the change. 
 
@@ -46,18 +46,17 @@ If you have an Outlook version that supports VBA, you can use ExcelAddin4Atlassi
 * clsAppEvents.cls
 * clsBreakDownTable.cls
 * CoreExcel.bas
-2. Then, add "Microsoft Scripting Runtime" and "Microsoft XML, v3.0" to the References list. 
-3. Now, the project can be compiled by selecting "Compile" under the Debug menu.
+2. Then, add "Microsoft Scripting Runtime" and "Microsoft XML, v3.0" to the References list (Tools->References...). 
+3. Compile the project by selecting "Compile" under the Debug menu.
 4. You can now create a [shortcut on the Quick Access Toolbar](https://support.microsoft.com/en-au/office/assign-a-macro-to-a-button-728c83ec-61d0-40bd-b6ba-927f84eb5d2c) for the macro "OpenCreateJiraIssueForm."
 
 Once this is done, you can select an email, click on the shortcut, and the solution will create a Jira issue based on the selected email.
 
 ![frmCreateJiraIssue.png](resources/images/frmCreateJiraIssue.png)
 
-## Use ExcelAddin4Atlassian library in your code
+## Use ExcelAddin4Atlassian code library in your code
 
-Create a new Excel file. Save the file as an Excel Macro-Enabled Workbook (*.xlsm).
-Enable ExcelAddin4Atlassian in your VBA Reference list to use the ExcelAddin4Atlassian code library.
+If you possess your own Excel Macro-Enabled Workbook (*.xlsm), you can include ExcelAddin4Atlassian in your VBA Reference list to access the ExcelAddin4Atlassian code library.
 
 ![References.png](resources/images/References.png)
 
