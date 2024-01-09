@@ -1,58 +1,84 @@
-## ExcelAdd-in4Jira, Excel Add-in for Jira
+## ExcelAddin4Atlassian, Excel Add-in for the Atlasstian products Jira and Confluence
 
-ExcelAdd-in4Jira is an Open Source Excel Add-in that allows you to connect your Jira-data directly to Microsoft Excel. 
-ExcelAdd-in4Jira is written in Visual Basic for Application (VBA) in Excel and saved as an Add-in. This means you can use all this functionality from all your Excel sheets. 
+
+ExcelAddin4Atlassian is an open-source Excel Add-in that enables you to connect your Jira and Confluence data directly to Microsoft Excel. 
+It is written in Visual Basic for Application (VBA) within Excel and saved as an Add-in, allowing you to utilize its functionality across all your Excel sheets.
 
 # Installation
-1. Downaload the latest [version of ExcelAdd-in4Jira](https://github.com/DagAtleStenstad/ExcelAdd-in4Jira/archive/master.zip).
+1. Downaload the latest [version of ExcelAddin4Atlassian](https://github.com/Dagiz007/ExcelAddin4Atlassian/archive/master.zip).
 2. Unzip the file. 
-3. Add ExcelAdd-in4Jira as a new [Add-in in Excel](https://support.office.com/en-us/article/add-or-remove-add-ins-in-excel-0af570c4-5cf3-4fa9-9b88-403625a0b460).
-4. Start Excel og write this formula in a optional cell: **=JiraSettings()**
-5. Fill in your Jira URL, username and password. Click <Ok> to save the change. 
+3. Add ExcelAddin4Atlassian as a new [Add-in in Excel](https://support.office.com/en-us/article/add-or-remove-add-ins-in-excel-0af570c4-5cf3-4fa9-9b88-403625a0b460).
+4. Start Excel og write this formula in a optional cell: **=OpenExcelAddin4AtlassianSettings()**
+5. Fill in your Atlassian URL, username and password. Click <Ok> to save the change. 
 
 #  Use/ formulas
-Excel will come up with suggestions as you write a formula. In the suggestion list you can navigate with the arrow keys and press <Tab> to auto-complete and <Tab> again to select.
+Excel will provide suggestions as you write a formula. In the suggestion list, navigate with the arrow keys, press <Tab> to auto-complete, and <Tab> again to select. 
+To view required or optional arguments for the selected function, press Ctrl + Shift + A.
 
-**=JiraSettings()** open the Add-inn Settings windows. Here you can set:
-* Jira URL (URL to your Jira instance)
-* Your Jira username
-* Your Jira password
-* Default downloading folder for Jira attachments
+**=OpenExcelAddin4AtlassianSettings()** Opens the Add-in Settings window where you can set:
+* URL (URL to your instance)
+* Email 
+* [Token](https://id.atlassian.com/manage-profile/security/api-tokens)
+* Enable logging (log all the rest API response)
+* Log-path 
 
-![JiraSettings.png](resources/images/JiraSettings.png)
+![frmSettings.png](resources/images/frmSettings.png
 
-**=JiraCreateIssue(project, summary, description, issueType, Optional assignee, Optional parentKey)** create new Jira issue.  
-If assignee is not set the issue will be Unassigned.
-If parentKey is not set the function will create a normal issue. If you want to create a subtask the ParentKey must reference to the issue where you want to create the subtask.   
-Example: =JiraCreateIssue("RISK"; "My first issue"; "Created by ExcelAdd-in4Jira"; "Task")  
-Example: =JiraCreateIssue("RISK"; "My first subtask"; "Created by ExcelAdd-in4Jira"; "Sub-task"; "RISK-1")  
+**=JiraCreateIssue(project, issueType, summary, description)** Creates a new Jira issue.  
+Example: =JiraCreateIssue("RISK"; "Task"; "My first issue"; "Created by ExcelAddin4Atlassian")
 
-**=JiraCreateIssueLink(type, inwardIssue, outwardIssue, Optional comment)** create link between two Jira Issues.
-Example: =JiraCreateIssueLink("Duplicate"; "ISSUE-1"; "ISSUE-2"; "This is a comment.")  
+**=JiraDownloadIssuesAttachments(jql, path)** Downloads all Jira attachments based on a JQL search string to a defined folder.
 
-**=JiraGetIssues()** gets all Jira issues based on a JQL search string. 
+**=JiraGetIssue(key)** Retrieves Jira issues based on the selected key.
+Example: =JiraGetIssue("TSU-789")
 
-![JiraJQL.png](resources/images/JiraJQL.png)
+**=JiraGetIssueDaysInTransitions(JiraKey; statuses)** Returns the number of days the issue has been in one or more statuses.
+Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development, Testing")
 
-**=JiraGetIssueSummary(JiraKey)** get the Jira issue summary.
+**=JiraGetIssues(jql)** Gets all Jira issues based on a JQL search string.
 
-**=JiraGetIssueCreatedDate(JiraKey)** get the Jira issue created date.
+**==JiraOpenCreateIssueForm()** Opens a form to create a new Jira issue.
 
-**=JiraGetIssueIssueType(JiraKey)** get the Jira issue issueType.
+![frmCreateJiraIssue.png](resources/images/frmCreateJiraIssue.png)
 
-**=JiraGetIssueAssignee(JiraKey)** get the Jira issue assignee.
 
-**=JiraGetIssueReporter(JiraKey)** get the Jira issue reporter.
+# Write your own code
+Enable ExcelAddin4Atlassian in your VBA Reference list to use the ExcelAddin4Atlassian code library.
 
-**=JiraGetIssueLatestReleaseDate(JiraKey)** get the Jira issue last released date. 
+![frmReferences.png](resources/images/frmReferences.png)
 
-**=JiraGetIssueDaysInTransitions(JiraKey; statuses)** return number of days the issue has been in one or more statuses.  
-Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development", "Testing")
+The example below goes through all Confluence pages and replaces one string with another.
 
-**=JiraGetIssueCustomField(JiraKey; CutomFieldName)** get value from the custom field.  
-If the custom fild is an array (multiple selected values) you must [set the cell format to "Wrapped text"](https://www.techonthenet.com/excel/cells/wrap_text2016.php).   
-Example: =JiraGetIssueCustomField("TE-1"; "Custom field name")
-
-**=JiraDownloadIssuesAttachments(()** download all Jira attachments based on a JQL search string. 
-
-![JiraDownloadAttachments.png](resources/images/JiraDownloadAttachments.png)
+```VBA
+Sub Start()
+      
+    Dim fromText As String
+    Dim toText As String
+    
+    fromText = "https://old_url.com/"
+    toText = "https://new_url.com/"
+    
+    Dim pages As Collection
+    Dim page As clsConfluencePage
+    
+    Set pages = confluence.getPages
+    
+    
+    For Each page In pages
+        DoEvents
+        
+        If InStr(1, page.body, fromText) > 0 Then
+            page.body = Replace(page.body, fromText, toText)
+            
+            Call confluence.updateConfluenceContent(page.ID, page.Status, page.Title, page.body, page.Version + 1)
+        End If
+    Next
+    
+    
+    Set pages = Nothing
+    Set page = Nothing
+    
+    MsgBox "Finish"
+   
+End Sub
+```

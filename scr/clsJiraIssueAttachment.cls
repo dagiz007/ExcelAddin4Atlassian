@@ -2,14 +2,14 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "issuetype"
+Attribute VB_Name = "clsJiraIssueAttachment"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Private pId As String
-Private pName As String
-Private pSubtask As Boolean
+Private pFilename As String
+Private pData As Variant
 
 Public Property Get id() As String
     id = pId
@@ -19,18 +19,18 @@ Public Property Let id(value As String)
     pId = value
 End Property
 
-Public Property Get name() As String
-    name = pName
+Public Property Get filename() As String
+    filename = pFilename
 End Property
 
-Public Property Let name(value As String)
-    pName = value
+Public Property Let filename(value As String)
+    pFilename = value
 End Property
 
-Public Property Get subtask() As Boolean
-    subtask = sSubtask
+Public Property Get data() As Variant
+    data = pData
 End Property
 
-Public Property Let subtask(value As Boolean)
-    pSubtask = value
+Public Property Let data(value As Variant)
+    pData = value
 End Property

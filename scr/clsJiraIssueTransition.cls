@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "transition"
+Attribute VB_Name = "clsJiraIssueTransition"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -13,7 +13,7 @@ Private pFromString As String
 Private pToId As String
 Private pToString As String
 Private pDaysInSourceStatus As Integer
-Private pAuthor As user
+Private pAuthor As clsJiraUser
 
 Public Property Get transitionDate() As Date
     transitionDate = pTransitionDate
@@ -63,11 +63,10 @@ Public Property Let daysInSourceStatus(value As Integer)
     pDaysInSourceStatus = value
 End Property
 
-Public Property Get author() As user
+Public Property Get author() As clsJiraUser
     Set author = pAuthor
 End Property
 
-Public Property Let author(value As user)
+Public Property Let author(value As clsJiraUser)
     Set pAuthor = value
 End Property
-

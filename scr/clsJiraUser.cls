@@ -2,22 +2,22 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "user"
+Attribute VB_Name = "clsJiraUser"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Private pUserKey As String
+Private pAccountID As String
 Private pEmailAddress As String
 Private pDisplayName As String
 Private pActive As Boolean
 
-Public Property Get userKey() As String
-    userKey = pUserKey
+Public Property Get accountID() As String
+    accountID = pAccountID
 End Property
 
-Public Property Let userKey(value As String)
-    pUserKey = value
+Public Property Let accountID(value As String)
+    pAccountID = value
 End Property
 
 Public Property Get email() As String

@@ -252,8 +252,8 @@ Public Function ConvertToJson(ByVal JsonValue As Variant, Optional ByVal Whitesp
                 json_Indentation = VBA.String$(json_CurrentIndentation + 1, Whitespace)
                 json_InnerIndentation = VBA.String$(json_CurrentIndentation + 2, Whitespace)
             Else
-                json_Indentation = VBA.Space$((json_CurrentIndentation + 1) * Whitespace)
-                json_InnerIndentation = VBA.Space$((json_CurrentIndentation + 2) * Whitespace)
+                json_Indentation = VBA.space$((json_CurrentIndentation + 1) * Whitespace)
+                json_InnerIndentation = VBA.space$((json_CurrentIndentation + 2) * Whitespace)
             End If
         End If
 
@@ -342,7 +342,7 @@ Public Function ConvertToJson(ByVal JsonValue As Variant, Optional ByVal Whitesp
             If VBA.VarType(Whitespace) = VBA.vbString Then
                 json_Indentation = VBA.String$(json_CurrentIndentation, Whitespace)
             Else
-                json_Indentation = VBA.Space$(json_CurrentIndentation * Whitespace)
+                json_Indentation = VBA.space$(json_CurrentIndentation * Whitespace)
             End If
         End If
 
@@ -356,7 +356,7 @@ Public Function ConvertToJson(ByVal JsonValue As Variant, Optional ByVal Whitesp
             If VBA.VarType(Whitespace) = VBA.vbString Then
                 json_Indentation = VBA.String$(json_CurrentIndentation + 1, Whitespace)
             Else
-                json_Indentation = VBA.Space$((json_CurrentIndentation + 1) * Whitespace)
+                json_Indentation = VBA.space$((json_CurrentIndentation + 1) * Whitespace)
             End If
         End If
 
@@ -395,7 +395,7 @@ Public Function ConvertToJson(ByVal JsonValue As Variant, Optional ByVal Whitesp
                 If VBA.VarType(Whitespace) = VBA.vbString Then
                     json_Indentation = VBA.String$(json_CurrentIndentation, Whitespace)
                 Else
-                    json_Indentation = VBA.Space$(json_CurrentIndentation * Whitespace)
+                    json_Indentation = VBA.space$(json_CurrentIndentation * Whitespace)
                 End If
             End If
 
@@ -434,7 +434,7 @@ Public Function ConvertToJson(ByVal JsonValue As Variant, Optional ByVal Whitesp
                 If VBA.VarType(Whitespace) = VBA.vbString Then
                     json_Indentation = VBA.String$(json_CurrentIndentation, Whitespace)
                 Else
-                    json_Indentation = VBA.Space$(json_CurrentIndentation * Whitespace)
+                    json_Indentation = VBA.space$(json_CurrentIndentation * Whitespace)
                 End If
             End If
 
@@ -801,7 +801,7 @@ Private Function json_ParseErrorMessage(json_String As String, ByRef json_Index 
 
     json_ParseErrorMessage = "Error parsing JSON:" & VBA.vbNewLine & _
                              VBA.Mid$(json_String, json_StartIndex, json_StopIndex - json_StartIndex + 1) & VBA.vbNewLine & _
-                             VBA.Space$(json_Index - json_StartIndex) & "^" & VBA.vbNewLine & _
+                             VBA.space$(json_Index - json_StartIndex) & "^" & VBA.vbNewLine & _
                              ErrorMessage
 End Function
 
@@ -843,7 +843,7 @@ Private Sub json_BufferAppend(ByRef json_Buffer As String, _
         Dim json_AddedLength As Long
         json_AddedLength = IIf(json_AppendLength > json_BufferLength, json_AppendLength, json_BufferLength)
 
-        json_Buffer = json_Buffer & VBA.Space$(json_AddedLength)
+        json_Buffer = json_Buffer & VBA.space$(json_AddedLength)
         json_BufferLength = json_BufferLength + json_AddedLength
     End If
 
@@ -1091,7 +1091,7 @@ Private Function utc_ExecuteInShell(utc_ShellCommand As String) As utc_ShellResu
     If utc_File = 0 Then: Exit Function
 
     Do While utc_feof(utc_File) = 0
-        utc_Chunk = VBA.Space$(50)
+        utc_Chunk = VBA.space$(50)
         utc_Read = CLng(utc_fread(utc_Chunk, 1, Len(utc_Chunk) - 1, utc_File))
         If utc_Read > 0 Then
             utc_Chunk = VBA.Left$(utc_Chunk, CLng(utc_Read))
