@@ -60,7 +60,7 @@ If you possess your own Excel Macro-Enabled Workbook (*.xlsm), you can include E
 
 ![References.png](resources/images/References.png)
 
-# Getting started 
+### Getting started 
 
 ```VBA
     Dim issues As Collection
