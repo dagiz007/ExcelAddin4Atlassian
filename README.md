@@ -8,7 +8,7 @@ It is written in Visual Basic for Application (VBA) within Excel and saved as an
 2. Unzip the file. 
 3. Add ExcelAddin4Atlassian as a new Add-in in Excel (Click the File tab, click Options, and then click the Add-Ins category. In the Manage box, click Excel Add-ins, and then click Go).
 4. Start Excel og write this formula in a optional cell: **=OpenExcelAddin4AtlassianSettings()**
-5. Fill in your Atlassian URL, username and password. Click <Ok> to save the change. 
+5. Fill in your Atlassian URL, username and token. Click <Ok> to save the change. 
 
 ##  Use/ formulas
 Excel will provide suggestions as you write a formula. In the suggestion list, navigate with the arrow keys, press <Tab> to auto-complete, and <Tab> again to select. 
@@ -31,7 +31,7 @@ Example: =JiraCreateIssue("RISK"; "Task"; "My first issue"; "Created by ExcelAdd
 **=JiraGetIssue(key)** Retrieves Jira issues based on the selected key.
 Example: =JiraGetIssue("TSU-789")
 
-**=JiraGetIssueDaysInTransitions(JiraKey; statuses)** Returns the number of days the issue has been in one or more statuses.
+**=JiraGetIssueDaysInTransitions(key; statuses)** Returns the number of days the issue has been in one or more statuses.
 Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development, Testing")
 
 **=JiraGetIssues(jql)** Gets all Jira issues based on a JQL search string.
@@ -76,6 +76,11 @@ If you possess your own Excel Macro-Enabled Workbook (*.xlsm), you can include E
 
     Set issues = Nothing
     Set issue = Nothing
+```
+
+```VBA
+Dim jiraKey As String
+jiraKey = Jira.CreateIssue(project, issueType, summary, description)
 ```
 
 The example below goes through all Confluence pages and replaces one string with another.
