@@ -33,8 +33,8 @@ Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development, Testing")
 
 **=JiraGetIssues(jql)** Gets all Jira issues based on a JQL search string.
 
-**=JiraGetIssueFieldValue(key; field)** Gets fieldvalue from the Jira issue. 
-Example: =JiraGetIssueFieldValue("TE-1"; "summary")
+**=JiraGetIssueFieldValue(key; field)** Gets fieldvalue from the Jira issue.  
+Example: =JiraGetIssueFieldValue("TE-1"; "summary")  
 Example: =JiraGetIssueFieldValue("TE-1"; "customfield_10421")
 
 **=JiraOpenCreateIssueForm()** Opens a form to create a new Jira issue.
