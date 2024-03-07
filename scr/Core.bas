@@ -24,8 +24,6 @@ Public Sub LoadSettings()
  
     gstrLogPath = GetSetting("ExcelAddin4Atlassian", "Settings", "LogPath")
     
-    If gstrAtlassianURL = vbNullString Then frmSettings.Show
-
 End Sub
 
 Public Sub openHyperlink(url)

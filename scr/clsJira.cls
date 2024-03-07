@@ -25,8 +25,14 @@ Private Sub Class_Terminate()
 End Sub
 
 Public Function CorrectCredentianls() As Boolean
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/myself")
-    If RestClient.status = 200 Then CorrectCredentianls = True
+    If gstrAtlassianURL = vbNullString Then Call LoadSettings
+    
+    If gstrAtlassianURL = vbNullString Then
+        CorrectCredentianls = False
+    Else
+        Set RestClient = RestClient.Service("GET", "/rest/api/3/myself")
+        If RestClient.status = 200 Then CorrectCredentianls = True
+    End If
 End Function
 
 Public Function GetIssues(jql As String) As Collection
@@ -81,10 +87,8 @@ Public Function GetIssue(ByVal key As String, Optional ByVal json As Object) As 
     If Not gobjJiraIssueCache.Exists(key) Then
         
         If json Is Nothing Then
-        
             'Version 2 use Jira Markup, but version 3 only support ADF (for Description and comment)
             Set RestClient = RestClient.Service("GET", "/rest/api/2/issue/" & key & "?expand=changelog,renderedFields")
-            
             Set json = JsonConverter.ParseJson(RestClient.responseText)
         End If
         
@@ -92,8 +96,9 @@ Public Function GetIssue(ByVal key As String, Optional ByVal json As Object) As 
         
         issue.id = json("id")
         issue.key = json("key")
+        
+        'TODO; Do we need this since you can use the geetJiraIssueVale function?
         issue.summary = json("fields")("summary")
-
         issue.description = IIf(IsNull(json("fields")("description")), "", json("fields")("description"))
         issue.descriptionRendered = json("renderedFields")("description")
                 
@@ -115,6 +120,8 @@ Public Function GetIssue(ByVal key As String, Optional ByVal json As Object) As 
         If Not IsNull(json("fields")("resolutiondate")) Then
             issue.resolutionDate = ParseISO8601date(json("fields")("resolutiondate"))
         End If
+        
+        issue.json = json
            
         gobjJiraIssueCache.Add key, issue
            

@@ -23,6 +23,7 @@ Private pAttachment As Collection
 Private pComment As Collection
 Private pDescription As String
 Private pDescriptionRendered As String
+Private pJson As Object
 
 Public Property Get id() As String
     id = pId
@@ -152,20 +153,12 @@ Public Property Let descriptionRendered(value As String)
      pDescriptionRendered = value
 End Property
 
-Public Property Get customfield_10117() As String
-     customfield_10117 = pCustomfield_10117
+Public Property Get json() As Object
+     Set json = pJson
 End Property
 
-Public Property Let customfield_10117(value As String)
-     pCustomfield_10117 = value
-End Property
-
-Public Property Get customfield_10175() As String
-     customfield_10175 = pCustomfield_10175
-End Property
-
-Public Property Let customfield_10175(value As String)
-     pCustomfield_10175 = value
+Public Property Let json(value As Object)
+     Set pJson = value
 End Property
 
 

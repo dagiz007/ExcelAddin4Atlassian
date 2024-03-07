@@ -9,8 +9,6 @@ Sub Auto_Open()                                         'https://stackoverflow.c
 
     If gcolAppEventResult Is Nothing Then Set gcolAppEventResult = New Collection
     
-    Call LoadSettings
-  
 End Sub
 
 Public Function OpenExcelAddin4AtlassianSettings()
@@ -57,8 +55,11 @@ Public Function JiraDownloadIssusAttachments(jql As String, path As String)
        
 End Function
 
-Public Function JiraGetIssue(key As String)
-    Call JiraGetIssues("key=" & key)
+Public Function JiraGetIssueFieldValue(key As String, value As String) As String
+    Dim issue As clsJiraIssue
+    Set issue = Jira.GetIssue(key)
+      
+    JiraGetIssueFieldValue = issue.json("fields")("" & value & "")
 End Function
 
 Public Function JiraGetIssueDaysInTransitions(jiraKey As String, ParamArray transitions() As Variant) As Integer
@@ -92,7 +93,6 @@ Public Function JiraGetIssues(jql As String)
     
     For Each issue In issues
         Call addValueToResult(issue.key, bdTable.GetCellPosition(row))
-        Call addValueToResult(issue.summary, bdTable.GetCellPosition(row, 1))
         row = row + 1
     Next
     

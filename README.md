@@ -28,13 +28,14 @@ Example: =JiraCreateIssue("RISK"; "Task"; "My first issue"; "Created by ExcelAdd
 
 **=JiraDownloadIssuesAttachments(jql, path)** Downloads all Jira attachments based on a JQL search string to a defined folder.
 
-**=JiraGetIssue(key)** Retrieves Jira issues based on the selected key.
-Example: =JiraGetIssue("TSU-789")
-
 **=JiraGetIssueDaysInTransitions(key; statuses)** Returns the number of days the issue has been in one or more statuses.
 Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development, Testing")
 
 **=JiraGetIssues(jql)** Gets all Jira issues based on a JQL search string.
+
+**=JiraGetIssueFieldValue(key; field)** Gets fieldvalue from the Jira issue. 
+Example: =JiraGetIssueFieldValue("TE-1"; "summary")
+Example: =JiraGetIssueFieldValue("TE-1"; "customfield_10421")
 
 **=JiraOpenCreateIssueForm()** Opens a form to create a new Jira issue.
 
