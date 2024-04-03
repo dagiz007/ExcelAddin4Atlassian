@@ -28,6 +28,60 @@ Public Function CorrectCredentianls() As Boolean
     If Jira.CorrectCredentianls Then CorrectCredentianls = True
 End Function
 
+Public Function getSpacePermissions(name As String) As Collection
+
+    On Error GoTo Errorhandler
+    
+    Dim url As String
+    url = "/wiki/rest/api/space/" & name & "?expand=permissions"
+    
+    Dim json As Object
+    Dim item As Variant
+    
+    Dim spacePermission As clsConfluenceSpacePermissions
+    Dim spacePermissions As New Collection
+    
+    Set RestClient = RestClient.Service("GET", url)
+    Set json = JsonConverter.ParseJson(RestClient.responseText)
+    
+    For Each item In json("permissions")
+        Set spacePermission = New clsConfluenceSpacePermissions
+    
+        If Not IsEmpty(item("subjects")) Then
+            If Not IsEmpty(item("subjects")("group")) Then
+                'Group
+                spacePermission.permissionType = item("subjects")("group")("results")(1)("type")
+                spacePermission.id = item("subjects")("group")("results")(1)("id")
+                spacePermission.name = item("subjects")("group")("results")(1)("name")
+            
+            Else
+                'Direct
+                spacePermission.permissionType = item("subjects")("user")("results")(1)("type")
+                spacePermission.id = item("subjects")("user")("results")(1)("accountId")
+                spacePermission.name = item("subjects")("user")("results")(1)("publicName")
+                spacePermission.email = item("subjects")("user")("results")(1)("email")
+            End If
+            
+            spacePermission.operation = item("operation")("operation")
+            spacePermission.targetType = item("operation")("targetType")
+        End If
+            
+        spacePermissions.Add spacePermission
+    Next
+    
+    Set getSpacePermissions = spacePermissions
+    
+    Exit Function
+        
+        
+Errorhandler:
+
+    Debug.Print Err.Number & Err.description
+    Stop
+    Resume Next
+    
+End Function
+
 Public Function GetSpaces() As Collection
     
     On Error GoTo Errorhandler
