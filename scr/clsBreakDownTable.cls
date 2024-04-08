@@ -35,6 +35,10 @@ Public Property Let cellformat(value As String)
     pCellformat = value
 End Property
 
+Private Sub Class_initialize()
+    startingPosition = Range(ActiveCell.Address)
+End Sub
+
 Public Function Cell(Optional row As Integer = 0, Optional col As Integer = 0)
     Set Cell = Cells(pStartingPosition.row + row, pStartingPosition.Column + col)
 End Function
@@ -42,3 +46,5 @@ End Function
 Public Function GetCellPosition(Optional row As Integer = 0, Optional col As Integer = 0) As Range
     Set GetCellPosition = Range(Cell(row, col).Address)
 End Function
+
+

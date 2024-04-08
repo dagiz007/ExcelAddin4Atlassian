@@ -10,6 +10,8 @@ Attribute VB_Exposed = True
 Private pId As String
 Private pKey As String
 Private pName As String
+Private pArchived As Boolean
+Private pSimplified As Boolean
 
 Public Property Get id() As String
     id = pId
@@ -33,5 +35,21 @@ End Property
 
 Public Property Let name(value As String)
     pName = value
+End Property
+
+Public Property Get archived() As Boolean
+    archived = pArchived
+End Property
+
+Public Property Let archived(value As Boolean)
+    pArchived = value
+End Property
+
+Public Property Get simplified() As Boolean
+    simplified = pSimplified
+End Property
+
+Public Property Let simplified(value As Boolean)
+    pSimplified = value
 End Property
 

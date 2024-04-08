@@ -26,7 +26,7 @@ Public Sub LoadSettings()
     
 End Sub
 
-Public Sub openHyperlink(url)
+Public Sub OpenHyperlink(url)
     ShellExecute 0, vbNullString, url, vbNullString, vbNullString, vbNormalFocus
 End Sub
 
@@ -50,6 +50,11 @@ End Function
 'Function to use clsJira class from other files.
 Public Function Jira() As clsJira
     Set Jira = New clsJira
+End Function
+
+'Function to use clsBreakDownTable class from other files.
+Public Function NewBreakDownTable() As clsBreakDownTable
+    Set NewBreakDownTable = New clsBreakDownTable
 End Function
 
 Public Function ReadFile(ByVal sFilepath As String) As Variant

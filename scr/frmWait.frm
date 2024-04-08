@@ -18,5 +18,5 @@ Private Sub cmdAbort_Click()
 End Sub
 
 Private Sub lblLink_Click()
- Call openHyperlink("https://github.com/dagiz007/ExcelAddin4Atlassian")
+ Call OpenHyperlink("https://github.com/dagiz007/ExcelAddin4Atlassian")
 End Sub

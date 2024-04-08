@@ -67,6 +67,12 @@ Public Function Service(method As String, url As String, Optional payload As Var
         Service.responseText = .responseText
         Service.responseBody = .responseBody
         
+        If Not Service.status = 200 Then
+            Debug.Print Service.responseText
+        Else
+            'Debug.Print Service.responseText
+        End If
+        
         If gblnLogging Then Call addLog(Format(Now(), "YYYYMMDD") & "_RestAudit.log", gstrAtlassianURL & url & vbTab & _
                                          method & vbTab & _
                                          payload & vbTab & _

@@ -156,6 +156,44 @@ Public Function UpdateComment(ByVal key As String, id As Long, comment As String
         
 End Function
 
+Public Function GetProjectRoles(projectId As String)
+    Set RestClient = RestClient.Service("GET", "/rest/api/3/project/" & projectId & "/role/")
+    Debug.Print RestClient.responseText
+    'TODO write function
+End Function
+
+Public Function GetProjectRoleActor(projectId As String, roleId As String) As Collection
+        
+    DoEvents
+    
+    Dim json As Object
+    Dim item As Variant
+    
+    Dim roleActor As clsJiraProjectRoleActor
+    Dim roleActors As New Collection
+    
+    Set RestClient = RestClient.Service("GET", "/rest/api/3/project/" & projectId & "/role/" & roleId)
+    
+    Set json = JsonConverter.ParseJson(RestClient.responseText)
+    
+    For Each item In json("actors")
+        Set roleActor = New clsJiraProjectRoleActor
+        
+        'atlassian-user-role-actor, atlassian-group-role-actor
+        roleActor.roleType = item("type")
+        roleActor.name = item("displayName")
+        
+        If Not IsEmpty(item("actorUser")) Then
+            roleActor.id = item("actorUser")("accountId")
+        End If
+        
+        roleActors.Add roleActor
+    Next
+    
+    Set GetProjectRoleActor = roleActors
+    
+End Function
+
 Public Function GetProject() As Collection
     
     Dim json As Object
@@ -174,6 +212,11 @@ Public Function GetProject() As Collection
         project.id = item("id")
         project.key = item("key")
         project.name = item("name")
+        project.simplified = item("simplified")
+                
+        If Not IsEmpty(item("archived")) And item("archived") = True Then
+            project.archived = True
+        End If
         
         projects.Add project
     Next

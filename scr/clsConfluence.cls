@@ -28,12 +28,14 @@ Public Function CorrectCredentianls() As Boolean
     If Jira.CorrectCredentianls Then CorrectCredentianls = True
 End Function
 
-Public Function getSpacePermissions(name As String) As Collection
+Public Function getSpacePermissions(key As String) As Collection
 
     On Error GoTo Errorhandler
     
+    DoEvents
+    
     Dim url As String
-    url = "/wiki/rest/api/space/" & name & "?expand=permissions"
+    url = "/wiki/rest/api/space/" & key & "?expand=permissions"
     
     Dim json As Object
     Dim item As Variant
@@ -82,6 +84,35 @@ Errorhandler:
     
 End Function
 
+Public Function GetSpace(ByVal key As String, Optional ByVal json As Object) As clsConfluenceSpace
+
+    On Error GoTo Errorhandler
+    
+    If json Is Nothing Then
+        Set RestClient = RestClient.Service("GET", "/wiki/rest/api/space/" & key)
+        Set json = JsonConverter.ParseJson(RestClient.responseText)
+    End If
+    
+    Dim space As New clsConfluenceSpace
+    
+    space.id = json("id")
+    space.name = json("name")
+    space.key = json("key")
+    space.spaceType = json("type")
+    
+    Set GetSpace = space
+    
+    Exit Function
+    
+    
+Errorhandler:
+
+    Debug.Print Err.Number & Err.description
+    Stop
+    Resume Next
+    
+End Function
+
 Public Function GetSpaces() As Collection
     
     On Error GoTo Errorhandler
@@ -104,12 +135,7 @@ Public Function GetSpaces() As Collection
         
         For Each item In json("results")
             Set space = New clsConfluenceSpace
-            
-            space.id = item("id")
-            space.name = item("name")
-            space.key = item("key")
-            space.spaceType = item("type")
-            
+            Set space = GetSpace(item("key"), item)
             spaces.Add space
         Next
         

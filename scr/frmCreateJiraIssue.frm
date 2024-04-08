@@ -74,7 +74,7 @@ Private Sub cmdCreate_Click()
         Next
         
         If MsgBox("Issue " & key & " has been successfully created. Would you like to open the issue in your browser?", vbInformation + vbYesNo) = vbYes Then
-            Call openHyperlink(gstrAtlassianURL & "/browse/" & key)
+            Call OpenHyperlink(gstrAtlassianURL & "/browse/" & key)
         End If
     End If
     
@@ -82,7 +82,7 @@ Private Sub cmdCreate_Click()
 End Sub
 
 Private Sub lblLink_Click()
-    Call openHyperlink("https://github.com/dagiz007/ExcelAddin4Atlassian")
+    Call OpenHyperlink("https://github.com/dagiz007/ExcelAddin4Atlassian")
 End Sub
 
 Private Sub UserForm_Initialize()
@@ -94,9 +94,11 @@ Private Sub UserForm_Initialize()
     Dim projectExist As Boolean
     
     For Each project In projects
-        cboProject.AddItem project.key
-        If project.key = GetSetting("VbaAddin4Atlassian", "Settings", "lastCreatedProject") Then projectExist = True
-        cboProject.List(cboProject.ListCount - 1, 1) = project.name
+        If project.archived = False Then
+            cboProject.AddItem project.key
+            If project.key = GetSetting("VbaAddin4Atlassian", "Settings", "lastCreatedProject") Then projectExist = True
+            cboProject.List(cboProject.ListCount - 1, 1) = project.name
+        End If
     Next
     
     cboProject.TextColumn = 2
