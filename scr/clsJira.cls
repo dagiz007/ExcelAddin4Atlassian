@@ -185,6 +185,8 @@ Public Function GetProjectRoleActor(projectId As String, roleId As String) As Co
         
         If Not IsEmpty(item("actorUser")) Then
             roleActor.id = item("actorUser")("accountId")
+        Else
+            roleActor.id = item("actorGroup")("groupId")
         End If
         
         roleActors.Add roleActor
@@ -224,6 +226,40 @@ Public Function GetProject() As Collection
     Set GetProject = projects
 
 End Function
+
+Public Function GetUser(accountId As String) As clsJiraUser
+    
+    Dim json As Object
+   
+    Set RestClient = RestClient.Service("GET", "/rest/api/3/user?accountId=" & accountId)
+    
+    Set json = JsonConverter.ParseJson(RestClient.responseText)
+    
+    Set GetUser = AddUser(json)
+
+End Function
+
+Public Function GetUserFromGroup(groupId As String) As Collection
+    
+    Dim json As Object
+    Dim item As Variant
+
+    Set RestClient = RestClient.Service("GET", "/rest/api/3/group/member?groupId=" & groupId)
+    
+    Dim user As clsJiraUser
+    Dim users As New Collection
+
+    Set json = JsonConverter.ParseJson(RestClient.responseText)
+    
+     For Each item In json("values")
+        Set user = AddUser(item)
+        users.Add user
+    Next
+    
+    Set GetUserFromGroup = users
+
+End Function
+
 
 Public Function GetIssueTypes(jiraProjectID As String) As Collection
     
@@ -301,7 +337,7 @@ Private Function AddUser(ByVal item As Object) As clsJiraUser
 
     Dim user As New clsJiraUser
     
-    user.accountID = item("accountId")
+    user.accountId = item("accountId")
     user.name = item("displayName")
     user.email = item("emailAddress")
     user.active = item("active")

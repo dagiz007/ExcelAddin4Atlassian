@@ -12,11 +12,11 @@ Private pEmailAddress As String
 Private pDisplayName As String
 Private pActive As Boolean
 
-Public Property Get accountID() As String
-    accountID = pAccountID
+Public Property Get accountId() As String
+    accountId = pAccountID
 End Property
 
-Public Property Let accountID(value As String)
+Public Property Let accountId(value As String)
     pAccountID = value
 End Property
 
