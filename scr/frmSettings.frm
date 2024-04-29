@@ -98,7 +98,13 @@ Private Sub lblLink_Click()
     Call OpenHyperlink("https://github.com/dagiz007/ExcelAddin4Atlassian")
 End Sub
 
+Private Sub MultiPage1_Change()
+
+End Sub
+
 Private Sub UserForm_Initialize()
+
+    If gstrAtlassianURL = vbNullString Then Call LoadSettings
     
     txtAtlassianURL = gstrAtlassianURL
     txtAtlassianEmail = gstrAtlassianEmail
