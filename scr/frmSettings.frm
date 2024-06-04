@@ -36,6 +36,8 @@ Private Sub cmdOk_Click()
     gstrAtlassianEmail = Trim(txtAtlassianEmail)
     gstrAtlassianToken = Trim(txtAtlassianToken)
     
+    gstrAtlassianCloudId = Trim(txtAtlassianCloudID)
+    
     gstrLogPath = Trim(txtLogPath)
     If Right(gstrLogPath, 1) = "\" Then gstrLogPath = Left(gstrLogPath, Len(gstrLogPath) - 1)
     
@@ -83,6 +85,7 @@ Private Sub cmdOk_Click()
         SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianURL", gstrAtlassianURL
         SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianEmail", gstrAtlassianEmail
         SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianToken", gstrAtlassianToken
+        SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianCloudId", gstrAtlassianCloudId
         SaveSetting "ExcelAddin4Atlassian", "Settings", "Logging", gblnLogging
         SaveSetting "ExcelAddin4Atlassian", "Settings", "LogPath", gstrLogPath
 
@@ -98,10 +101,6 @@ Private Sub lblLink_Click()
     Call OpenHyperlink("https://github.com/dagiz007/ExcelAddin4Atlassian")
 End Sub
 
-Private Sub MultiPage1_Change()
-
-End Sub
-
 Private Sub UserForm_Initialize()
 
     If gstrAtlassianURL = vbNullString Then Call LoadSettings
@@ -109,6 +108,7 @@ Private Sub UserForm_Initialize()
     txtAtlassianURL = gstrAtlassianURL
     txtAtlassianEmail = gstrAtlassianEmail
     txtAtlassianToken = gstrAtlassianToken
+    txtAtlassianCloudID = gstrAtlassianCloudId
     chkLogging = gblnLogging
     txtLogPath = gstrLogPath
 

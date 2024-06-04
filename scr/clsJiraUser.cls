@@ -7,17 +7,17 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Private pAccountID As String
+Private pAccountId As String
 Private pEmailAddress As String
 Private pDisplayName As String
 Private pActive As Boolean
 
 Public Property Get accountId() As String
-    accountId = pAccountID
+    accountId = pAccountId
 End Property
 
 Public Property Let accountId(value As String)
-    pAccountID = value
+    pAccountId = value
 End Property
 
 Public Property Get email() As String

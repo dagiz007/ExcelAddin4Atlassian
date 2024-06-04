@@ -28,7 +28,54 @@ Public Function CorrectCredentianls() As Boolean
     If Jira.CorrectCredentianls Then CorrectCredentianls = True
 End Function
 
-Public Function getSpacePermissions(key As String) As Collection
+Public Function CreateSpace(key As String, name As String) As clsRestClient
+        
+    Dim payload As String
+
+    payload = "{""key"":""" & key & """," & _
+              " ""name"":""" & name & """}"
+             
+    Set CreateSpace = RestClient.Service("POST", "/wiki/rest/api/space", payload)
+    'status 200 = Successful.
+    'status 400 (space exist)
+    
+End Function
+
+Public Function AddSpacePermissions(key As String, permissionType As String, Id As String, operation As String, target As String) As clsRestClient
+
+    'permissionType could be "user" or "group"
+    
+    'Combination of Operation and Target
+    'Archive - page
+    'Create - comment
+    'Create - attachment
+    'Create - blogpost
+    'Create - page
+    'Export - space
+    'Delete - attachment
+    'Delete - blogpost
+    'Delete - comment
+    'Delete - space
+    'Delete - page
+    'restrict_content - space
+    'administer - space
+    'Read - space
+
+    Dim payload As String
+
+    payload = "{""subject"": { ""type"": """ & permissionType & """, ""identifier"": """ & Id & """ }," & _
+              " ""operation"": { ""key"": """ & operation & """, ""target"": """ & target & """ }}"
+              
+    Set AddSpacePermissions = RestClient.Service("POST", "/wiki/rest/api/space/" & key & "/permission/", payload)
+
+End Function
+
+Public Function RemoveSpacePermissions(permissionType As String, key As String, Id As Long) As clsRestClient
+    Set RemoveSpacePermissions = RestClient.Service("DELETE", "/wiki/rest/api/space/" & key & "/permission/" & Id)
+    'Status 204 = Permission successfully removed.
+End Function
+
+Public Function GetSpacePermissions(key As String) As Collection
 
     On Error GoTo Errorhandler
     
@@ -45,21 +92,23 @@ Public Function getSpacePermissions(key As String) As Collection
     
     Set RestClient = RestClient.Service("GET", url)
     Set json = JsonConverter.ParseJson(RestClient.responseText)
-    
+
     For Each item In json("permissions")
         Set spacePermission = New clsConfluenceSpacePermissions
     
         If Not IsEmpty(item("subjects")) Then
+                spacePermission.permissionId = item("id")
+        
             If Not IsEmpty(item("subjects")("group")) Then
                 'Group
                 spacePermission.permissionType = item("subjects")("group")("results")(1)("type")
-                spacePermission.id = item("subjects")("group")("results")(1)("id")
+                spacePermission.Id = item("subjects")("group")("results")(1)("id")
                 spacePermission.name = item("subjects")("group")("results")(1)("name")
             
             Else
-                'Direct
+                'Direct = User
                 spacePermission.permissionType = item("subjects")("user")("results")(1)("type")
-                spacePermission.id = item("subjects")("user")("results")(1)("accountId")
+                spacePermission.Id = item("subjects")("user")("results")(1)("accountId")
                 spacePermission.name = item("subjects")("user")("results")(1)("publicName")
                 spacePermission.email = item("subjects")("user")("results")(1)("email")
             End If
@@ -71,7 +120,7 @@ Public Function getSpacePermissions(key As String) As Collection
         spacePermissions.Add spacePermission
     Next
     
-    Set getSpacePermissions = spacePermissions
+    Set GetSpacePermissions = spacePermissions
     
     Exit Function
         
@@ -95,7 +144,7 @@ Public Function GetSpace(ByVal key As String, Optional ByVal json As Object) As 
     
     Dim space As New clsConfluenceSpace
     
-    space.id = json("id")
+    space.Id = json("id")
     space.name = json("name")
     space.key = json("key")
     space.spaceType = json("type")
@@ -203,18 +252,18 @@ Errorhandler:
     
 End Function
 
-Public Function GetPage(ByVal id As String, Optional ByVal json As Object) As clsConfluencePage
+Public Function GetPage(ByVal Id As String, Optional ByVal json As Object) As clsConfluencePage
 
     On Error GoTo Errorhandler
         
     If json Is Nothing Then
-        Set RestClient = RestClient.Service("get", "/wiki/api/v2/pages/" & id & "?body-format=storage")
+        Set RestClient = RestClient.Service("GET", "/wiki/api/v2/pages/" & Id & "?body-format=storage")
         Set json = JsonConverter.ParseJson(RestClient.responseText)
     End If
     
     Dim page As New clsConfluencePage
                 
-    page.id = json("id")
+    page.Id = json("id")
     page.title = json("title")
     page.version = json("version")("number")
     page.body = json("body")("storage")("value")
@@ -234,16 +283,16 @@ Errorhandler:
 
 End Function
 
-Public Function UpdateConfluenceContent(id As String, status As String, title As String, body As String, version As Integer) As clsRestClient
+Public Function UpdateConfluenceContent(Id As String, status As String, title As String, body As String, version As Integer) As clsRestClient
 
    Dim payload As String
 
-   payload = "{""id"":""" & id & """," & _
+   payload = "{""id"":""" & Id & """," & _
              " ""status"":""" & status & """," & _
              " ""title"":""" & title & """," & _
              " ""body"":{""representation"":""storage"", ""value"":" & JsonConverter.ConvertToJson(body) & "}," & _
              " ""version"":{""number"":" & version & "}}"
     
-   Set UpdateConfluenceContent = RestClient.Service("put", "/wiki/api/v2/pages/" & id, payload)
+   Set UpdateConfluenceContent = RestClient.Service("PUT", "/wiki/api/v2/pages/" & Id, payload)
     
 End Function

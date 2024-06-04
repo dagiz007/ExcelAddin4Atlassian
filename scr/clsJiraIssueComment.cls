@@ -20,11 +20,11 @@ Public Property Let created(value As Date)
     pCreated = value
 End Property
 
-Public Property Get id() As Long
-    id = pId
+Public Property Get Id() As Long
+    Id = pId
 End Property
 
-Public Property Let id(value As Long)
+Public Property Let Id(value As Long)
     pId = value
 End Property
 

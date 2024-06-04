@@ -11,11 +11,11 @@ Private pId As String
 Private pName As String
 Private pSubtask As Boolean
 
-Public Property Get id() As String
-    id = pId
+Public Property Get Id() As String
+    Id = pId
 End Property
 
-Public Property Let id(value As String)
+Public Property Let Id(value As String)
     pId = value
 End Property
 

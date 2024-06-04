@@ -7,12 +7,21 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
+Private pPermissionId As Long
 Private pPermissionType As String
 Private pName As String
 Private pId As String
 Private pEmail As String
 Private pOperation As String
 Private pTargetType As String
+
+Public Property Get permissionId() As Long
+    permissionId = pPermissionId
+End Property
+
+Public Property Let permissionId(value As Long)
+    pPermissionId = value
+End Property
 
 Public Property Get permissionType() As String
     permissionType = pPermissionType
@@ -30,11 +39,11 @@ Public Property Let name(value As String)
     pName = value
 End Property
 
-Public Property Get id() As String
-    id = pId
+Public Property Get Id() As String
+    Id = pId
 End Property
 
-Public Property Let id(value As String)
+Public Property Let Id(value As String)
     pId = value
 End Property
 

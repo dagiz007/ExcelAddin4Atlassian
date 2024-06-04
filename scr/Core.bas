@@ -5,6 +5,7 @@ Private Declare PtrSafe Function ShellExecute Lib "shell32.dll" Alias "ShellExec
 Public gstrAtlassianURL As String
 Public gstrAtlassianEmail As String
 Public gstrAtlassianToken As String
+Public gstrAtlassianCloudId As String
 Public gblnLogging As Boolean
 Public gstrLogPath As String
 
@@ -18,6 +19,7 @@ Public Sub LoadSettings()
     gstrAtlassianURL = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianURL")
     gstrAtlassianEmail = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianEmail")
     gstrAtlassianToken = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianToken")
+    gstrAtlassianCloudId = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianCloudId")
  
     'Logic to handle if settings are not set.
     gblnLogging = IIf(GetSetting("ExcelAddin4Atlassian", "Settings", "Logging") = "", False, GetSetting("ExcelAddin4Atlassian", "Settings", "Logging"))

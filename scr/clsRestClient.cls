@@ -41,15 +41,15 @@ Private Sub Class_initialize()
     If gstrBoundary = vbNullString Then gstrBoundary = CreateBoundary
 End Sub
 
-Public Function Service(method As String, url As String, Optional payload As Variant = "") As clsRestClient
+Public Function Service(method As String, url As String, Optional payload As Variant = "", Optional customURL As Boolean = True) As clsRestClient
 
     On Error GoTo ErrHandler
-           
+          
     Dim RestClient As Object
     Set RestClient = CreateObject("WinHttp.WinHttpRequest.5.1")
 
      With RestClient
-        .Open method, gstrAtlassianURL & url, False
+        .Open method, IIf(customURL, gstrAtlassianURL, "https://api.atlassian.com") & Replace(url, "{cloudId}", gstrAtlassianCloudId), False
         .setRequestHeader "Authorization", "Basic " & EncodeBase64(gstrAtlassianEmail & ":" & gstrAtlassianToken)
     
         If VarType(payload) = 8209 Then
@@ -58,6 +58,7 @@ Public Function Service(method As String, url As String, Optional payload As Var
         Else
             .setRequestHeader "Accept", "application/json; charset=utf-8"
             .setRequestHeader "Content-Type", "application/json"
+            If Not customURL Then .setRequestHeader "X-ExperimentalApi", "opt-in"
         End If
         
         .Send payload
