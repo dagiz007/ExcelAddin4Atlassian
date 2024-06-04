@@ -114,16 +114,16 @@ Private Sub UserForm_Initialize()
             iCheckBoxTop = 0
        
             For Each attachment In attachments
-                FrameAttachment.Controls.Add "Forms.CheckBox.1", "chkAttachment_" & attachment.id
-                Controls("chkAttachment_" & attachment.id).GroupName = "Attachment"
-                Controls("chkAttachment_" & attachment.id).Tag = attachment.id
-                Controls("chkAttachment_" & attachment.id).Top = iCheckBoxTop
-                Controls("chkAttachment_" & attachment.id).Left = 2
-                Controls("chkAttachment_" & attachment.id).Height = 18
-                Controls("chkAttachment_" & attachment.id).Width = 172
-                Controls("chkAttachment_" & attachment.id).WordWrap = False
-                Controls("chkAttachment_" & attachment.id).Caption = attachment.filename
-                Controls("chkAttachment_" & attachment.id).value = True
+                FrameAttachment.Controls.Add "Forms.CheckBox.1", "chkAttachment_" & attachment.Id
+                Controls("chkAttachment_" & attachment.Id).GroupName = "Attachment"
+                Controls("chkAttachment_" & attachment.Id).Tag = attachment.Id
+                Controls("chkAttachment_" & attachment.Id).Top = iCheckBoxTop
+                Controls("chkAttachment_" & attachment.Id).Left = 2
+                Controls("chkAttachment_" & attachment.Id).Height = 18
+                Controls("chkAttachment_" & attachment.Id).Width = 172
+                Controls("chkAttachment_" & attachment.Id).WordWrap = False
+                Controls("chkAttachment_" & attachment.Id).Caption = attachment.filename
+                Controls("chkAttachment_" & attachment.Id).value = True
                 iCheckBoxTop = iCheckBoxTop + 20
             Next
         
@@ -181,7 +181,7 @@ Private Sub getSelectedEmail()
             For i = 1 To .attachments.Count
                 Set attachment = New clsJiraIssueAttachment
                 
-                attachment.id = i
+                attachment.Id = i
                 
                 filename = .attachments.item(i).filename
                 attachment.filename = filename

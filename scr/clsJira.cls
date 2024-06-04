@@ -77,6 +77,34 @@ Public Function GetIssues(jql As String) As Collection
     
 End Function
 
+Public Function CreateProject(key As String, name As String, leadAccountId As String, projectTemplateKey As String) As clsRestClient
+    
+    Dim payload As String
+
+    payload = "{ ""assigneeType"": ""UNASSIGNED"", " & _
+              " ""key"":""" & key & """," & _
+              " ""name"":""" & name & """, " & _
+              " ""leadAccountId"": """ & leadAccountId & """, " & _
+              " ""projectTemplateKey"": """ & projectTemplateKey & """}"
+             
+    Set CreateProject = RestClient.Service("POST", "/rest/api/3/project", payload)
+
+End Function
+
+Public Function AddActorToProjectRole(key As String, roleId As String, userType As String, Id As String) As clsRestClient
+    
+    'userType can be user or groupId
+    
+    Dim url As String
+    url = "/rest/api/3/project/" & key & "/role/" & roleId
+    
+    Dim payload As String
+    payload = "{""" & userType & """: [ """ & Id & """  ]}"
+             
+    Set AddActorToProjectRole = RestClient.Service("POST", url, payload)
+
+End Function
+'TODO; søk etter Id
 Public Function GetIssue(ByVal key As String, Optional ByVal json As Object) As clsJiraIssue
 
     On Error GoTo Errorhandler
@@ -94,10 +122,8 @@ Public Function GetIssue(ByVal key As String, Optional ByVal json As Object) As 
         
         Dim issue As New clsJiraIssue
         
-        issue.id = json("id")
+        issue.Id = json("id")
         issue.key = json("key")
-        
-        'TODO; Do we need this since you can use the geetJiraIssueVale function?
         issue.summary = json("fields")("summary")
         issue.description = IIf(IsNull(json("fields")("description")), "", json("fields")("description"))
         issue.descriptionRendered = json("renderedFields")("description")
@@ -139,20 +165,57 @@ Errorhandler:
            
 End Function
 
-Public Function EditIssue(ByVal key As String, payload As String) As clsRestClient
-            
-    'Payload structure depending on the used api version. Version 2 use Jira Markup, but version 3 only support ADF (for updating description and comments).
-    Set EditIssue = RestClient.Service("PUT", "/rest/api/2/issue/" & key, payload)
+Public Function GetFormId(key As String) As Collection
     
+    Dim json As Object
+    Dim item As Variant
+    
+    Dim form As clsJiraForm
+    Dim forms As New Collection
+    
+    Set RestClient = RestClient.Service("GET", "/jira/forms/cloud/{cloudId}/issue/" & key & "/form", , False)
+    
+    Set json = JsonConverter.ParseJson(RestClient.responseText)
+    
+    For Each item In json
+        Set form = New clsJiraForm
+        Debug.Print item("id")
+        form.Id = item("id")
+        form.internal = item("internal")
+        form.submitted = item("submitted")
+        form.locked = item("lock")
+        form.name = item("name")
+        form.updated = ParseISO8601date(item("updated"))
+            
+        forms.Add form
+    Next
+    
+    Set GetFormId = forms
+
 End Function
 
-Public Function UpdateComment(ByVal key As String, id As Long, comment As String, Optional notifyUsers As Boolean = True) As clsRestClient
+Public Function GetForm(key As String, formId As String) As clsRestClient
+    Set GetForm = RestClient.Service("GET", "/jira/forms/cloud/{cloudId}/issue/" & key & "/form/" & formId, , False)
+    Debug.Print GetForm.responseText
+    'TODO write function
+End Function
+
+Public Function ReopenForm(key As String, formId As String) As clsRestClient
+    Set ReopenForm = RestClient.Service("PUT", "/jira/forms/cloud/{cloudId}/issue/" & key & "/form/" & formId & "/action/reopen", , False)
+End Function
+
+Public Function EditIssue(ByVal key As String, payload As String) As clsRestClient
+    'Payload structure depending on the used api version. Version 2 use Jira Markup, but version 3 only support ADF (for updating description and comments).
+    Set EditIssue = RestClient.Service("PUT", "/rest/api/2/issue/" & key, payload)
+End Function
+
+Public Function UpdateComment(ByVal key As String, Id As Long, comment As String, Optional notifyUsers As Boolean = True) As clsRestClient
     
     Dim payload As String
     payload = "{""body"": " & ConvertToJson(comment) & ", ""notifyUsers"": """ & notifyUsers & """}"
     
     'Payload structure depending on the used api version. Version 2 use Jira Markup, but version 3 only support ADF.
-    Set UpdateComment = RestClient.Service("PUT", "/rest/api/2/issue/" & key & "/comment/" & id, payload)
+    Set UpdateComment = RestClient.Service("PUT", "/rest/api/2/issue/" & key & "/comment/" & Id, payload)
         
 End Function
 
@@ -184,9 +247,9 @@ Public Function GetProjectRoleActor(projectId As String, roleId As String) As Co
         roleActor.name = item("displayName")
         
         If Not IsEmpty(item("actorUser")) Then
-            roleActor.id = item("actorUser")("accountId")
+            roleActor.Id = item("actorUser")("accountId")
         Else
-            roleActor.id = item("actorGroup")("groupId")
+            roleActor.Id = item("actorGroup")("groupId")
         End If
         
         roleActors.Add roleActor
@@ -211,7 +274,7 @@ Public Function GetProject() As Collection
     For Each item In json
         Set project = New clsJiraProject
         
-        project.id = item("id")
+        project.Id = item("id")
         project.key = item("key")
         project.name = item("name")
         project.simplified = item("simplified")
@@ -260,8 +323,7 @@ Public Function GetUserFromGroup(groupId As String) As Collection
 
 End Function
 
-
-Public Function GetIssueTypes(jiraProjectID As String) As Collection
+Public Function GetIssueTypes(jiraProjectId As String) As Collection
     
     Dim json As Object
     Dim item As Variant
@@ -269,14 +331,14 @@ Public Function GetIssueTypes(jiraProjectID As String) As Collection
     Dim issueType As clsJiraIssuetype
     Dim issueTypes As New Collection
         
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/project/" & jiraProjectID & "/statuses")
+    Set RestClient = RestClient.Service("GET", "/rest/api/3/project/" & jiraProjectId & "/statuses")
     
     Set json = JsonConverter.ParseJson(RestClient.responseText)
     
      For Each item In json
         Set issueType = New clsJiraIssuetype
             
-        issueType.id = item("id")
+        issueType.Id = item("id")
         issueType.name = item("name")
         issueType.subtask = item("subtask")
         
@@ -350,7 +412,7 @@ Private Function AddIssueType(ByVal item As Object) As clsJiraIssuetype
 
     Dim issueType As New clsJiraIssuetype
     
-    issueType.id = item("id")
+    issueType.Id = item("id")
     issueType.name = item("name")
     issueType.subtask = item("subtask")
     
@@ -362,7 +424,7 @@ Private Function AddIssueProject(ByVal item As Object) As clsJiraProject
 
     Dim project As New clsJiraProject
     
-    project.id = item("id")
+    project.Id = item("id")
     project.key = item("key")
     project.name = item("name")
     
@@ -419,7 +481,7 @@ Private Function AddIssueComments(ByVal items As Object) As Collection
     For Each item In items
         Set comment = New clsJiraIssueComment
         
-        comment.id = item("id")
+        comment.Id = item("id")
         comment.body = item("body")
         comment.created = ParseISO8601date(item("created"))
         
@@ -442,7 +504,7 @@ Private Function AddAttachments(ByVal items As Object) As Collection
     For Each item In items
         Set attachment = New clsJiraIssueAttachment
         
-        attachment.id = item("id")
+        attachment.Id = item("id")
         attachment.filename = item("filename")
         
         attachments.Add attachment
@@ -461,7 +523,7 @@ Private Function AddIssueFixVersions(ByVal items As Object) As Collection
     For Each item In items
         Set version = New clsJiraIssueVersion
         
-        version.id = item("id")
+        version.Id = item("id")
         version.versionName = item("name")
         version.releaseDate = item("releaseDate")
         version.archived = item("archived")

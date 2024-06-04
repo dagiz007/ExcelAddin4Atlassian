@@ -18,6 +18,7 @@ To view required or optional arguments for the selected function, press Ctrl + S
 * URL (URL to your instance)
 * Email 
 * [Token](https://id.atlassian.com/manage-profile/security/api-tokens)
+* CloudID. This is required for some of the webservice. The cloudId will be your Cloud ID and not your Org ID. [To get the cloud id go here](https://confluence.atlassian.com/jirakb/how-to-find-cloud-site-id-1272283178.html).
 * Enable logging (log all the rest API response)
 * Log-path 
 

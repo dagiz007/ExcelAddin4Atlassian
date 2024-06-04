@@ -12,7 +12,7 @@ Sub Auto_Open()                                         'https://stackoverflow.c
 End Sub
 
 Public Function OpenExcelAddin4AtlassianSettings()
-    
+        
     Call addValueToResult
     
     frmSettings.Show
@@ -46,7 +46,7 @@ Public Function JiraDownloadIssusAttachments(jql As String, path As String)
     For Each issue In issues
         counter = 1
         For Each attachment In issue.attachment
-            Call WriteFile(path & "\" & issue.key & "_" & counter & "_" & attachment.filename, Jira.GetAttachment(attachment.id))
+            Call WriteFile(path & "\" & issue.key & "_" & counter & "_" & attachment.filename, Jira.GetAttachment(attachment.Id))
             counter = counter + 1
         Next
     Next
