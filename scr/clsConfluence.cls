@@ -173,7 +173,7 @@ Public Function GetSpaces() As Collection
     
     Dim space As clsConfluenceSpace
     Dim spaces As New Collection
-
+    
     url = gstrAtlassianURL & "/wiki/api/v2/spaces"
         
     Do

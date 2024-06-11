@@ -187,6 +187,6 @@ Errorhandler:
 End Sub
 
 Public Function ParseISO8601date(ByVal iso8601date As String) As Date
-    ParseISO8601date = Format(Mid(iso8601date, 9, 2) & "." & Mid(iso8601date, 6, 2) & "." & Left(iso8601date, 4) & " " & Mid(iso8601date, 12, 8), "dd.mm.yyyy hh:mm:ss")
+    ParseISO8601date = Mid(iso8601date, 9, 2) & "." & Mid(iso8601date, 6, 2) & "." & Left(iso8601date, 4) & " " & Mid(iso8601date, 12, 8)
 End Function
 
