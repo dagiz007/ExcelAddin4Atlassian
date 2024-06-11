@@ -18,7 +18,7 @@ To view required or optional arguments for the selected function, press Ctrl + S
 * URL (URL to your instance)
 * Email 
 * [Token](https://id.atlassian.com/manage-profile/security/api-tokens)
-* CloudID. This is required for some of the webservice. The cloudId will be your Cloud ID and not your Org ID. [To get the cloud id go here](https://confluence.atlassian.com/jirakb/how-to-find-cloud-site-id-1272283178.html).
+* OrgId and Token is required for some of the siteadmin webservices. Go to [admin.atlassian.com](https://admin.atlassian.com/) -> Settings -> API Keys
 * Enable logging (log all the rest API response)
 * Log-path 
 
@@ -29,16 +29,20 @@ Example: =JiraCreateIssue("RISK"; "Task"; "My first issue"; "Created by ExcelAdd
 
 **=JiraDownloadIssuesAttachments(jql, path)** Downloads all Jira attachments based on a JQL search string to a defined folder.
 
-**=JiraGetIssueDaysInTransitions(key; statuses)** Returns the number of days the issue has been in one or more statuses.
+**=JiraGetFirstFomIdI(key)** Used to get the first formId from an Jira Service Management (JSM) issue
+
+**=JiraGetIssueDaysInTransitions(key; statuses)** Returns the number of days the issue has been in one or more statuses.  
 Example: =JiraGetIssueDaysInTransitions("TE-1"; "Development, Testing")
+
+**=JiraGetIssueFieldValue(key; field)** Gets fieldvalue from the Jira issue.     
+Example: =JiraGetIssueFieldValue("TE-1"; "summary")    
+Example: =JiraGetIssueFieldValue("TE-1"; "customfield_10421")  
 
 **=JiraGetIssues(jql)** Gets all Jira issues based on a JQL search string.
 
-**=JiraGetIssueFieldValue(key; field)** Gets fieldvalue from the Jira issue.   
-Example: =JiraGetIssueFieldValue("TE-1"; "summary")   
-Example: =JiraGetIssueFieldValue("TE-1"; "customfield_10421")
-
 **=JiraOpenCreateIssueForm()** Opens a form to create a new Jira issue.
+
+**=AtlassianGetAllUsers()** Returs all users in the organisation include theirs product access and when they used the product last time.
 
 ##  Use ExcelAddin4Atlassian in Outlook
 

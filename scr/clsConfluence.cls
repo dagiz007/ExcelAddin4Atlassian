@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Option Explicit
+    Option Explicit
 Private RestClient As New clsRestClient
 
 Private Sub Class_initialize()
@@ -35,7 +35,7 @@ Public Function CreateSpace(key As String, name As String) As clsRestClient
     payload = "{""key"":""" & key & """," & _
               " ""name"":""" & name & """}"
              
-    Set CreateSpace = RestClient.Service("POST", "/wiki/rest/api/space", payload)
+    Set CreateSpace = RestClient.Service("POST", gstrAtlassianURL & "/wiki/rest/api/space", payload)
     'status 200 = Successful.
     'status 400 (space exist)
     
@@ -66,12 +66,12 @@ Public Function AddSpacePermissions(key As String, permissionType As String, Id 
     payload = "{""subject"": { ""type"": """ & permissionType & """, ""identifier"": """ & Id & """ }," & _
               " ""operation"": { ""key"": """ & operation & """, ""target"": """ & target & """ }}"
               
-    Set AddSpacePermissions = RestClient.Service("POST", "/wiki/rest/api/space/" & key & "/permission/", payload)
+    Set AddSpacePermissions = RestClient.Service("POST", gstrAtlassianURL & "/wiki/rest/api/space/" & key & "/permission/", payload)
 
 End Function
 
 Public Function RemoveSpacePermissions(permissionType As String, key As String, Id As Long) As clsRestClient
-    Set RemoveSpacePermissions = RestClient.Service("DELETE", "/wiki/rest/api/space/" & key & "/permission/" & Id)
+    Set RemoveSpacePermissions = RestClient.Service("DELETE", gstrAtlassianURL & "/wiki/rest/api/space/" & key & "/permission/" & Id)
     'Status 204 = Permission successfully removed.
 End Function
 
@@ -138,7 +138,7 @@ Public Function GetSpace(ByVal key As String, Optional ByVal json As Object) As 
     On Error GoTo Errorhandler
     
     If json Is Nothing Then
-        Set RestClient = RestClient.Service("GET", "/wiki/rest/api/space/" & key)
+        Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/wiki/rest/api/space/" & key)
         Set json = JsonConverter.ParseJson(RestClient.responseText)
     End If
     
@@ -173,8 +173,8 @@ Public Function GetSpaces() As Collection
     
     Dim space As clsConfluenceSpace
     Dim spaces As New Collection
-    
-    url = "/wiki/api/v2/spaces"
+
+    url = gstrAtlassianURL & "/wiki/api/v2/spaces"
         
     Do
         DoEvents
@@ -218,15 +218,15 @@ Public Function GetPages(Optional spaceId As Long) As Collection
     Dim pages As New Collection
     
     If spaceId = 0 Then
-        url = "/wiki/api/v2/pages?body-format=storage"
+        url = "pages?body-format=storage"
     Else
-        url = "/wiki/api/v2/spaces/" & spaceId & "/pages?body-format=storage"
+        url = "spaces/" & spaceId & "/pages?body-format=storage"
     End If
         
     Do
         DoEvents
         
-        Set RestClient = RestClient.Service("GET", url)
+        Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/wiki/api/v2/" & url)
         Set json = JsonConverter.ParseJson(RestClient.responseText)
         
         For Each item In json("results")
@@ -257,7 +257,7 @@ Public Function GetPage(ByVal Id As String, Optional ByVal json As Object) As cl
     On Error GoTo Errorhandler
         
     If json Is Nothing Then
-        Set RestClient = RestClient.Service("GET", "/wiki/api/v2/pages/" & Id & "?body-format=storage")
+        Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/wiki/api/v2/pages/" & Id & "?body-format=storage")
         Set json = JsonConverter.ParseJson(RestClient.responseText)
     End If
     
@@ -293,6 +293,6 @@ Public Function UpdateConfluenceContent(Id As String, status As String, title As
              " ""body"":{""representation"":""storage"", ""value"":" & JsonConverter.ConvertToJson(body) & "}," & _
              " ""version"":{""number"":" & version & "}}"
     
-   Set UpdateConfluenceContent = RestClient.Service("PUT", "/wiki/api/v2/pages/" & Id, payload)
+   Set UpdateConfluenceContent = RestClient.Service("PUT", gstrAtlassianURL & "/wiki/api/v2/pages/" & Id, payload)
     
 End Function

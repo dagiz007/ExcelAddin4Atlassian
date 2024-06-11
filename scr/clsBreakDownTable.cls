@@ -40,7 +40,7 @@ Private Sub Class_initialize()
 End Sub
 
 Public Function Cell(Optional row As Integer = 0, Optional col As Integer = 0)
-    Set Cell = Cells(pStartingPosition.row + row, pStartingPosition.Column + col)
+    Set Cell = Cells(pStartingPosition.row + row, pStartingPosition.column + col)
 End Function
 
 Public Function GetCellPosition(Optional row As Integer = 0, Optional col As Integer = 0) As Range

@@ -10,9 +10,9 @@ Attribute VB_Exposed = True
 Private pId As String
 Private pKey As String
 Private pSummary As String
-Private pReporter As clsJiraUser
-Private pAssignee As clsJiraUser
-Private pCreator As clsJiraUser
+Private pReporter As clsAtlassianUser
+Private pAssignee As clsAtlassianUser
+Private pCreator As clsAtlassianUser
 Private pIssueType As clsJiraIssuetype
 Private pTransition As Collection
 Private pVersion As Collection
@@ -49,27 +49,27 @@ Public Property Let summary(value As String)
     pSummary = value
 End Property
 
-Public Property Get assignee() As clsJiraUser
+Public Property Get assignee() As clsAtlassianUser
     Set assignee = pAssignee
 End Property
 
-Public Property Let assignee(value As clsJiraUser)
+Public Property Let assignee(value As clsAtlassianUser)
     Set pAssignee = value
 End Property
 
-Public Property Get reporter() As clsJiraUser
+Public Property Get reporter() As clsAtlassianUser
     Set reporter = pReporter
 End Property
 
-Public Property Let reporter(value As clsJiraUser)
+Public Property Let reporter(value As clsAtlassianUser)
     Set pReporter = value
 End Property
 
-Public Property Get creator() As clsJiraUser
+Public Property Get creator() As clsAtlassianUser
     Set creator = pCreator
 End Property
 
-Public Property Let creator(value As clsJiraUser)
+Public Property Let creator(value As clsAtlassianUser)
     Set pCreator = value
 End Property
 

@@ -13,7 +13,7 @@ Private pFromString As String
 Private pToId As String
 Private pToString As String
 Private pDaysInSourceStatus As Integer
-Private pAuthor As clsJiraUser
+Private pAuthor As clsAtlassianUser
 
 Public Property Get transitionDate() As Date
     transitionDate = pTransitionDate
@@ -63,10 +63,10 @@ Public Property Let daysInSourceStatus(value As Integer)
     pDaysInSourceStatus = value
 End Property
 
-Public Property Get author() As clsJiraUser
+Public Property Get author() As clsAtlassianUser
     Set author = pAuthor
 End Property
 
-Public Property Let author(value As clsJiraUser)
+Public Property Let author(value As clsAtlassianUser)
     Set pAuthor = value
 End Property

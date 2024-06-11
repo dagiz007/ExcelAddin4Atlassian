@@ -30,7 +30,7 @@ Public Function CorrectCredentianls() As Boolean
     If gstrAtlassianURL = vbNullString Then
         CorrectCredentianls = False
     Else
-        Set RestClient = RestClient.Service("GET", "/rest/api/3/myself")
+        Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/3/myself")
         If RestClient.status = 200 Then CorrectCredentianls = True
     End If
 End Function
@@ -57,7 +57,7 @@ Public Function GetIssues(jql As String) As Collection
                ",""fields"": [""*all""], ""expand"": [""changelog,renderedFields""]}"
            
         'Version 2 use Jira Markup, but version 3 only support ADF (for Description and comment)
-        Set RestClient = RestClient.Service("POST", "/rest/api/2/search", payload)
+        Set RestClient = RestClient.Service("POST", gstrAtlassianURL & "/rest/api/2/search", payload)
         
         Set json = JsonConverter.ParseJson(RestClient.responseText)
         
@@ -87,7 +87,7 @@ Public Function CreateProject(key As String, name As String, leadAccountId As St
               " ""leadAccountId"": """ & leadAccountId & """, " & _
               " ""projectTemplateKey"": """ & projectTemplateKey & """}"
              
-    Set CreateProject = RestClient.Service("POST", "/rest/api/3/project", payload)
+    Set CreateProject = RestClient.Service("POST", gstrAtlassianURL & "/rest/api/3/project", payload)
 
 End Function
 
@@ -96,7 +96,7 @@ Public Function AddActorToProjectRole(key As String, roleId As String, userType 
     'userType can be user or groupId
     
     Dim url As String
-    url = "/rest/api/3/project/" & key & "/role/" & roleId
+    url = gstrAtlassianURL & "/rest/api/3/project/" & key & "/role/" & roleId
     
     Dim payload As String
     payload = "{""" & userType & """: [ """ & Id & """  ]}"
@@ -104,7 +104,7 @@ Public Function AddActorToProjectRole(key As String, roleId As String, userType 
     Set AddActorToProjectRole = RestClient.Service("POST", url, payload)
 
 End Function
-'TODO; søk etter Id
+
 Public Function GetIssue(ByVal key As String, Optional ByVal json As Object) As clsJiraIssue
 
     On Error GoTo Errorhandler
@@ -116,7 +116,7 @@ Public Function GetIssue(ByVal key As String, Optional ByVal json As Object) As 
         
         If json Is Nothing Then
             'Version 2 use Jira Markup, but version 3 only support ADF (for Description and comment)
-            Set RestClient = RestClient.Service("GET", "/rest/api/2/issue/" & key & "?expand=changelog,renderedFields")
+            Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/2/issue/" & key & "?expand=changelog,renderedFields")
             Set json = JsonConverter.ParseJson(RestClient.responseText)
         End If
         
@@ -173,13 +173,12 @@ Public Function GetFormId(key As String) As Collection
     Dim form As clsJiraForm
     Dim forms As New Collection
     
-    Set RestClient = RestClient.Service("GET", "/jira/forms/cloud/{cloudId}/issue/" & key & "/form", , False)
+    Set RestClient = RestClient.Service("GET", "https://api.atlassian.com/jira/forms/cloud/" & getCloudId & "/issue/" & key & "/form", , True)
     
     Set json = JsonConverter.ParseJson(RestClient.responseText)
     
     For Each item In json
         Set form = New clsJiraForm
-        Debug.Print item("id")
         form.Id = item("id")
         form.internal = item("internal")
         form.submitted = item("submitted")
@@ -195,18 +194,24 @@ Public Function GetFormId(key As String) As Collection
 End Function
 
 Public Function GetForm(key As String, formId As String) As clsRestClient
-    Set GetForm = RestClient.Service("GET", "/jira/forms/cloud/{cloudId}/issue/" & key & "/form/" & formId, , False)
+    Set GetForm = RestClient.Service("GET", "https://api.atlassian.com/jira/forms/cloud/" & getCloudId & "/issue/" & key & "/form/" & formId, , True)
     Debug.Print GetForm.responseText
     'TODO write function
 End Function
 
+Public Function GetProjectRoles(projectId As String) As clsRestClient
+    Set GetProjectRoles = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/3/project/" & projectId & "/role/")
+    Debug.Print GetProjectRoles.responseText
+    'TODO write function
+End Function
+
 Public Function ReopenForm(key As String, formId As String) As clsRestClient
-    Set ReopenForm = RestClient.Service("PUT", "/jira/forms/cloud/{cloudId}/issue/" & key & "/form/" & formId & "/action/reopen", , False)
+    Set ReopenForm = RestClient.Service("PUT", "https://api.atlassian.com/jira/forms/cloud/" & getCloudId & "/issue/" & key & "/form/" & formId & "/action/reopen", , True)
 End Function
 
 Public Function EditIssue(ByVal key As String, payload As String) As clsRestClient
     'Payload structure depending on the used api version. Version 2 use Jira Markup, but version 3 only support ADF (for updating description and comments).
-    Set EditIssue = RestClient.Service("PUT", "/rest/api/2/issue/" & key, payload)
+    Set EditIssue = RestClient.Service("PUT", gstrAtlassianURL & "/rest/api/2/issue/" & key, payload)
 End Function
 
 Public Function UpdateComment(ByVal key As String, Id As Long, comment As String, Optional notifyUsers As Boolean = True) As clsRestClient
@@ -215,14 +220,8 @@ Public Function UpdateComment(ByVal key As String, Id As Long, comment As String
     payload = "{""body"": " & ConvertToJson(comment) & ", ""notifyUsers"": """ & notifyUsers & """}"
     
     'Payload structure depending on the used api version. Version 2 use Jira Markup, but version 3 only support ADF.
-    Set UpdateComment = RestClient.Service("PUT", "/rest/api/2/issue/" & key & "/comment/" & Id, payload)
+    Set UpdateComment = RestClient.Service("PUT", gstrAtlassianURL & "/rest/api/2/issue/" & key & "/comment/" & Id, payload)
         
-End Function
-
-Public Function GetProjectRoles(projectId As String)
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/project/" & projectId & "/role/")
-    Debug.Print RestClient.responseText
-    'TODO write function
 End Function
 
 Public Function GetProjectRoleActor(projectId As String, roleId As String) As Collection
@@ -235,7 +234,7 @@ Public Function GetProjectRoleActor(projectId As String, roleId As String) As Co
     Dim roleActor As clsJiraProjectRoleActor
     Dim roleActors As New Collection
     
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/project/" & projectId & "/role/" & roleId)
+    Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/3/project/" & projectId & "/role/" & roleId)
     
     Set json = JsonConverter.ParseJson(RestClient.responseText)
     
@@ -267,7 +266,7 @@ Public Function GetProject() As Collection
     Dim project As clsJiraProject
     Dim projects As New Collection
     
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/project")
+    Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/3/project")
     
     Set json = JsonConverter.ParseJson(RestClient.responseText)
     
@@ -290,11 +289,11 @@ Public Function GetProject() As Collection
 
 End Function
 
-Public Function GetUser(accountId As String) As clsJiraUser
+Public Function GetUser(accountId As String) As clsAtlassianUser
     
     Dim json As Object
    
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/user?accountId=" & accountId)
+    Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/3/user?accountId=" & accountId)
     
     Set json = JsonConverter.ParseJson(RestClient.responseText)
     
@@ -307,9 +306,9 @@ Public Function GetUserFromGroup(groupId As String) As Collection
     Dim json As Object
     Dim item As Variant
 
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/group/member?groupId=" & groupId)
+    Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/3/group/member?groupId=" & groupId)
     
-    Dim user As clsJiraUser
+    Dim user As clsAtlassianUser
     Dim users As New Collection
 
     Set json = JsonConverter.ParseJson(RestClient.responseText)
@@ -331,7 +330,7 @@ Public Function GetIssueTypes(jiraProjectId As String) As Collection
     Dim issueType As clsJiraIssuetype
     Dim issueTypes As New Collection
         
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/project/" & jiraProjectId & "/statuses")
+    Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/3/project/" & jiraProjectId & "/statuses")
     
     Set json = JsonConverter.ParseJson(RestClient.responseText)
     
@@ -362,7 +361,7 @@ Public Function CreateIssue(project As String, issueType As String, summary As S
         payload = payload & """issuetype"" : { ""name"" : """ & issueType & """ } } }"
         
         
-    Set RestClient = RestClient.Service("POST", "/rest/api/3/issue/", payload)
+    Set RestClient = RestClient.Service("POST", gstrAtlassianURL & "/rest/api/3/issue/", payload)
     
     If RestClient.status = 201 Then
         Dim json As Object
@@ -383,21 +382,35 @@ Public Sub AddAttachment(key As String, filename As String, file As String)
         "Content-Type: application/octet-stream" & vbCrLf & vbCrLf & StrConv(file, vbUnicode) & vbCrLf & _
         "--" & gstrBoundary & "--", vbFromUnicode)
         
-    Call RestClient.Service("POST", "/rest/api/3/issue/" & key & "/attachments", payload)
+    Call RestClient.Service("POST", gstrAtlassianURL & "/rest/api/3/issue/" & key & "/attachments", payload)
      
 End Sub
 
 Public Function GetAttachment(attachmentId As String) As Variant
     
-    Set RestClient = RestClient.Service("GET", "/rest/api/3/attachment/content/" & attachmentId)
+    Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/rest/api/3/attachment/content/" & attachmentId)
     
     GetAttachment = RestClient.responseBody
     
 End Function
 
-Private Function AddUser(ByVal item As Object) As clsJiraUser
+Private Function getCloudId() As String
+    
+    getCloudId = gstrAtlassianCloudId
+    
+    If getCloudId = vbNullString Then
+        Dim json As Object
+        
+        Set RestClient = RestClient.Service("GET", gstrAtlassianURL & "/_edge/tenant_info")
+        Set json = JsonConverter.ParseJson(RestClient.responseText)
+        getCloudId = json("cloudId")
+    End If
+    
+End Function
 
-    Dim user As New clsJiraUser
+Private Function AddUser(ByVal item As Object) As clsAtlassianUser
+
+    Dim user As New clsAtlassianUser
     
     user.accountId = item("accountId")
     user.name = item("displayName")
@@ -536,6 +549,3 @@ Private Function AddIssueFixVersions(ByVal items As Object) As Collection
         
 End Function
 
-Private Function ParseISO8601date(ByVal iso8601date As String) As Date
-    ParseISO8601date = Mid(iso8601date, 9, 2) & "." & Mid(iso8601date, 6, 2) & "." & Left(iso8601date, 4) & " " & Mid(iso8601date, 12, 8)
-End Function

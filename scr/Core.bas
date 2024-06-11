@@ -6,6 +6,8 @@ Public gstrAtlassianURL As String
 Public gstrAtlassianEmail As String
 Public gstrAtlassianToken As String
 Public gstrAtlassianCloudId As String
+Public gstrAtlassianOrgId As String
+Public gstrAtlassianOrgToken As String
 Public gblnLogging As Boolean
 Public gstrLogPath As String
 
@@ -19,7 +21,8 @@ Public Sub LoadSettings()
     gstrAtlassianURL = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianURL")
     gstrAtlassianEmail = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianEmail")
     gstrAtlassianToken = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianToken")
-    gstrAtlassianCloudId = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianCloudId")
+    gstrAtlassianOrgId = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianOrgId")
+    gstrAtlassianOrgToken = GetSetting("ExcelAddin4Atlassian", "Settings", "AtlassianOrgToken")
  
     'Logic to handle if settings are not set.
     gblnLogging = IIf(GetSetting("ExcelAddin4Atlassian", "Settings", "Logging") = "", False, GetSetting("ExcelAddin4Atlassian", "Settings", "Logging"))
@@ -52,6 +55,11 @@ End Function
 'Function to use clsJira class from other files.
 Public Function Jira() As clsJira
     Set Jira = New clsJira
+End Function
+
+'Function to use clsAtlassian class from other files.
+Public Function Atlassian() As clsAtlassian
+    Set Atlassian = New clsAtlassian
 End Function
 
 'Function to use clsBreakDownTable class from other files.
@@ -177,3 +185,8 @@ Errorhandler:
     Exit Sub
 
 End Sub
+
+Public Function ParseISO8601date(ByVal iso8601date As String) As Date
+    ParseISO8601date = Format(Mid(iso8601date, 9, 2) & "." & Mid(iso8601date, 6, 2) & "." & Left(iso8601date, 4) & " " & Mid(iso8601date, 12, 8), "dd.mm.yyyy hh:mm:ss")
+End Function
+

@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSettings 
    Caption         =   "Settings"
-   ClientHeight    =   4290
+   ClientHeight    =   5010
    ClientLeft      =   45
    ClientTop       =   390
    ClientWidth     =   7290
@@ -36,7 +36,8 @@ Private Sub cmdOk_Click()
     gstrAtlassianEmail = Trim(txtAtlassianEmail)
     gstrAtlassianToken = Trim(txtAtlassianToken)
     
-    gstrAtlassianCloudId = Trim(txtAtlassianCloudID)
+    gstrAtlassianOrgId = Trim(txtAtlassianOrgID)
+    gstrAtlassianOrgToken = Trim(txtAtlassianOrgToken)
     
     gstrLogPath = Trim(txtLogPath)
     If Right(gstrLogPath, 1) = "\" Then gstrLogPath = Left(gstrLogPath, Len(gstrLogPath) - 1)
@@ -85,7 +86,9 @@ Private Sub cmdOk_Click()
         SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianURL", gstrAtlassianURL
         SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianEmail", gstrAtlassianEmail
         SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianToken", gstrAtlassianToken
-        SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianCloudId", gstrAtlassianCloudId
+        SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianOrgId", gstrAtlassianOrgId
+        SaveSetting "ExcelAddin4Atlassian", "Settings", "AtlassianOrgToken", gstrAtlassianOrgToken
+        
         SaveSetting "ExcelAddin4Atlassian", "Settings", "Logging", gblnLogging
         SaveSetting "ExcelAddin4Atlassian", "Settings", "LogPath", gstrLogPath
 
@@ -108,7 +111,9 @@ Private Sub UserForm_Initialize()
     txtAtlassianURL = gstrAtlassianURL
     txtAtlassianEmail = gstrAtlassianEmail
     txtAtlassianToken = gstrAtlassianToken
-    txtAtlassianCloudID = gstrAtlassianCloudId
+    txtAtlassianOrgID = gstrAtlassianOrgId
+    txtAtlassianOrgToken = gstrAtlassianOrgToken
+    
     chkLogging = gblnLogging
     txtLogPath = gstrLogPath
 

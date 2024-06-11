@@ -122,3 +122,43 @@ Private Sub addValueToResult(Optional ByVal cellvalue As String = "", Optional p
     gcolAppEventResult.Add bdTable
    
 End Sub
+
+Public Function AtlassianGetAllUsers()
+        
+    frmWait.Show vbModeless
+    Dim users As Collection
+    Dim user As clsAtlassianUser
+    Dim product As clsAtlassianProductAccess
+        
+    Set users = Atlassian.GetUsers
+        
+    Dim row As Integer
+    
+    Dim bdTable As New clsBreakDownTable
+    bdTable.startingPosition = Range(ActiveCell.Address)
+    
+    Call addValueToResult("Name", bdTable.GetCellPosition(row))
+    Call addValueToResult("Email", bdTable.GetCellPosition(row, 1))
+    Call addValueToResult("Active", bdTable.GetCellPosition(row, 2))
+    Call addValueToResult("Product", bdTable.GetCellPosition(row, 3))
+    Call addValueToResult("URL", bdTable.GetCellPosition(row, 4))
+    Call addValueToResult("Last active", bdTable.GetCellPosition(row, 5))
+    row = row + 1
+    
+    For Each user In users
+        For Each product In user.productAccess
+            Call addValueToResult(user.name, bdTable.GetCellPosition(row))
+            Call addValueToResult(user.email, bdTable.GetCellPosition(row, 1))
+            Call addValueToResult(user.active, bdTable.GetCellPosition(row, 2))
+            Call addValueToResult(product.name, bdTable.GetCellPosition(row, 3))
+            Call addValueToResult(product.url, bdTable.GetCellPosition(row, 4))
+            If product.lastActive <> 0 Then Call addValueToResult(product.lastActive, bdTable.GetCellPosition(row, 5), "dd.MM.yyyy HH:mm:ss")
+            row = row + 1
+        Next
+    Next
+    
+End Function
+
+Public Function JiraGetFirstFormId(key As String)
+    JiraGetFirstFormId = Jira.GetFormId(key)(1).Id
+End Function

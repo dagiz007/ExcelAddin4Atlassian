@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 Private pCreated As Date
 Private pId As Long
 Private pBody As String
-Private pAuthor As clsJiraUser
+Private pAuthor As clsAtlassianUser
 
 Public Property Get created() As Date
     created = pCreated
@@ -36,10 +36,10 @@ Public Property Let body(value As String)
     pBody = value
 End Property
 
-Public Property Get author() As clsJiraUser
+Public Property Get author() As clsAtlassianUser
     Set author = pAuthor
 End Property
 
-Public Property Let author(value As clsJiraUser)
+Public Property Let author(value As clsAtlassianUser)
     Set pAuthor = value
 End Property

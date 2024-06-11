@@ -22,6 +22,8 @@ Private Sub mxlApp_SheetCalculate(ByVal Sh As Object)
         Dim selectedPosition As Range
         
         For Each bdTable In gcolAppEventResult
+            DoEvents
+            
             If selectedPosition Is Nothing Then Set selectedPosition = bdTable.startingPosition
 
             bdTable.Cell.NumberFormat = bdTable.cellformat

@@ -41,7 +41,7 @@ Private Sub Class_initialize()
     If gstrBoundary = vbNullString Then gstrBoundary = CreateBoundary
 End Sub
 
-Public Function Service(method As String, url As String, Optional payload As Variant = "", Optional customURL As Boolean = True) As clsRestClient
+Public Function Service(method As String, url As String, Optional payload As Variant = "", Optional experimentalApi As Boolean = False) As clsRestClient
 
     On Error GoTo ErrHandler
           
@@ -49,8 +49,14 @@ Public Function Service(method As String, url As String, Optional payload As Var
     Set RestClient = CreateObject("WinHttp.WinHttpRequest.5.1")
 
      With RestClient
-        .Open method, IIf(customURL, gstrAtlassianURL, "https://api.atlassian.com") & Replace(url, "{cloudId}", gstrAtlassianCloudId), False
-        .setRequestHeader "Authorization", "Basic " & EncodeBase64(gstrAtlassianEmail & ":" & gstrAtlassianToken)
+        .Open method, url, False
+        
+        If Left(url, 32) = "https://api.atlassian.com/admin/" Then
+            .setRequestHeader "Authorization", "Bearer " & gstrAtlassianOrgToken
+        Else
+            .setRequestHeader "Authorization", "Basic " & EncodeBase64(gstrAtlassianEmail & ":" & gstrAtlassianToken)
+        End If
+        
     
         If VarType(payload) = 8209 Then
             .setRequestHeader "X-Atlassian-Token", "nocheck"
@@ -58,32 +64,31 @@ Public Function Service(method As String, url As String, Optional payload As Var
         Else
             .setRequestHeader "Accept", "application/json; charset=utf-8"
             .setRequestHeader "Content-Type", "application/json"
-            If Not customURL Then .setRequestHeader "X-ExperimentalApi", "opt-in"
+            If experimentalApi Then .setRequestHeader "X-ExperimentalApi", "opt-in"
         End If
         
         .Send payload
+
+        Me.status = .status
+        Me.responseText = .responseText
+        Me.responseBody = .responseBody
         
-        Set Service = New clsRestClient
-        Service.status = .status
-        Service.responseText = .responseText
-        Service.responseBody = .responseBody
-        
-        If Not Service.status = 200 Then
-            Debug.Print Service.responseText
+        If Not Me.status = 200 Then
+            Debug.Print Me.responseText
         Else
-            'Debug.Print Service.responseText
+            'Debug.Print Me.responseText
         End If
         
         If gblnLogging Then Call addLog(Format(Now(), "YYYYMMDD") & "_RestAudit.log", gstrAtlassianURL & url & vbTab & _
                                          method & vbTab & _
                                          payload & vbTab & _
-                                         Service.status & vbTab & _
-                                         Service.responseText)
+                                         Me.status & vbTab & _
+                                         Me.responseText)
     End With
         
     Set RestClient = Nothing
     
-    Set Service = Service
+    Set Service = Me
     
     Exit Function
 
