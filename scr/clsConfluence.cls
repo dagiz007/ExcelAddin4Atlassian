@@ -90,7 +90,7 @@ Public Function GetSpacePermissions(key As String) As Collection
     Dim spacePermission As clsConfluenceSpacePermissions
     Dim spacePermissions As New Collection
     
-    Set RestClient = RestClient.Service("GET", url)
+    Set RestClient = RestClient.Service("GET", gstrAtlassianURL & url)
     Set json = JsonConverter.ParseJson(RestClient.responseText)
 
     For Each item In json("permissions")
@@ -174,12 +174,12 @@ Public Function GetSpaces() As Collection
     Dim space As clsConfluenceSpace
     Dim spaces As New Collection
     
-    url = gstrAtlassianURL & "/wiki/api/v2/spaces"
+    url = "/wiki/api/v2/spaces"
         
     Do
         DoEvents
         
-        Set RestClient = RestClient.Service("GET", url)
+        Set RestClient = RestClient.Service("GET", gstrAtlassianURL & url)
         Set json = JsonConverter.ParseJson(RestClient.responseText)
         
         For Each item In json("results")
